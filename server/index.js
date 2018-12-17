@@ -50,9 +50,13 @@ module.exports = {
             }
 
             const dateSchedule = getDates(new Date(data.startDate), new Date(data.endDate), tiffin, data.isWeekend);
+            const date = new Date(data.startDate);
+            let obj = {
+                [date.getFullYear()]: dateSchedule,
+            }
 
             scheduler.CustomerId = new Object(data.customerId);
-            scheduler.Date = dateSchedule
+            scheduler.TiffinSchedule = obj
             return saveSchedule(scheduler).then(function(data) {
                 return getCustomer().then(function(customers) {
                     resolve(customers);
@@ -85,9 +89,9 @@ module.exports = {
             })
         });
     },
-    getSchedule(customerId) {
+    getSchedule(customerId, date) {
         return new Promise(function (resolve, reject) {
-            return getSchedule(customerId).then(function(schedule) {
+            return getSchedule(customerId, date).then(function(schedule) {
                 resolve(schedule);
             })
         });

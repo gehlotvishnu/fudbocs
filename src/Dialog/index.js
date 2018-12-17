@@ -54,13 +54,13 @@ class DialogBox extends Component {
   }
 
   updateSchedule(index, day, date) {
-    this.setState({showDialog: true, index: index, date: date.year() + "-" + date.month() + "-" + day});
+    this.setState({showDialog: true, index: index, date: date.year() + "-" + (date.month() + 1) + "-" + day});
   }
 
-  _getSchedule() {
+  _getSchedule(date) {
     const that = this;
 
-    getSchedule(this.props.customerId).then(function(schedule) {
+    getSchedule({customerId: this.props.customerId, date: date}).then(function(schedule) {
         console.log("Schedule.............", schedule);
         that.setState({schedule});
       });
@@ -69,7 +69,7 @@ class DialogBox extends Component {
   isDateExistInSchedule(day, month, year) {
     let colorCode = undefined;
 
-    this.state.schedule && this.state.schedule[0] && (this.state.schedule[0].Date || []).map(function(data, index) {
+    this.state.schedule && (this.state.schedule.monthSchedule || []).map(function(data, index) {
         if(moment(year + '-' + month + '-' + day).isSame(data.date)) {
             if(data.tiffin) {
                 if(data.tiffin.launch && data.tiffin.dinner) {
@@ -185,7 +185,7 @@ class DialogBox extends Component {
 
             {
 
-                this.state.showDialog && <Schedule index={this.state.index} _id={this.state.schedule[0]._id} customerId={this.state.schedule[0].CustomerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
+                this.state.showDialog && <Schedule index={this.state.index} _id={this.state.schedule._id} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
             }
         </Dialog>
         )

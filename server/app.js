@@ -40,7 +40,7 @@ app.get('/api/getCustomers', function (req, res) {
 });
 
 app.get('/api/getSchedule', function (req, res) {
-  getSchedule(req.query.customerId).then(schedule => res.send(schedule));
+  getSchedule(req.query.customerId, req.query.date).then(schedule => res.send(schedule));
 });
 
 app.get('/api/getAuthorDetails', function (req, res) {

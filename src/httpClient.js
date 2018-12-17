@@ -64,7 +64,7 @@ export const getCustomers = function (query) {
 
 export const getSchedule = function (query) {
     return new Promise(function (resolve, reject) {
-        axios('api/getSchedule?customerId=' + query, {
+        axios('api/getSchedule?customerId=' + query.customerId + '&date' + query.date, {
             method: 'GET',
         }).then(res => {
             resolve(res.data);

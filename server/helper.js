@@ -19,7 +19,9 @@ const getDates = function(startDate, endDate, tiffin, isWeekend) {
 
       currentDate = addDays.call(currentDate, 1);
     }
-    return dates;
+
+
+    return {[startDate.getMonth() + 1] : dates};
   };
 
 const is_weekend =  function(date1){

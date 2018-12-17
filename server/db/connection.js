@@ -16,19 +16,21 @@ module.exports = {
             Schedule.findById(Object(newSchedule.Id), function(err, schedule) {
                 if (err) throw err;
 
-                schedule.markModified('Date');
-                schedule.Date[newSchedule.index].tiffin = newSchedule.tiffin;
+                schedule.markModified('TiffinSchedule');
+
+                if(newSchedule.index) {
+                    schedule.TiffinSchedule[0][newSchedule.Date.getFullYear()][newSchedule.Date.getMonth() + 1][newSchedule.index].tiffin = newSchedule.tiffin;
+                } else {
+                    const obj = {date: newSchedule.Date.getFullYear() + "-" + (newSchedule.Date.getMonth() + 1) + "-" + newSchedule.Date.getDate(), tiffin: newSchedule.tiffin};
+                    
+                    schedule.TiffinSchedule[0][newSchedule.Date.getFullYear()][newSchedule.Date.getMonth() + 1].push(obj);
+                }
+                // schedule.Date[newSchedule.index].tiffin = newSchedule.tiffin;
 
                 schedule.save(function (err, data) {
                     if (err) throw err;
 
-                    Schedule.find({CustomerId: Object(newSchedule.customerId)}, function(err, schedule) {
-                        if (err) throw err;
-                    
-                        // object of all the customera
-                        console.log(schedule);
-                        resolve(schedule);
-                    });
+                    resolve({_id: data._id, monthSchedule: data.TiffinSchedule[0][newSchedule.Date.getFullYear()][newSchedule.Date.getMonth() + 1]});
                   });
             });
         });
@@ -71,15 +73,21 @@ module.exports = {
             });
         });
     },
-    getSchedule(customerId) {
+    getSchedule(customerId, date) {
         return new Promise(function (resolve, reject) {
             // get all the customer
             Schedule.find({CustomerId: Object(customerId)}, function(err, schedule) {
                 if (err) throw err;
-            
+                
+                const date1 = date ? new Date(date) : new Date();
+                
                 // object of all the customera
                 console.log(schedule);
-                resolve(schedule);
+                if(schedule.length > 0) {
+                    resolve({_id: schedule[0]._id, monthSchedule: schedule[0].TiffinSchedule[0][date1.getFullYear()][date1.getMonth() + 1]});
+                } else {
+                    resolve({});
+                }
             });
         });
     }
