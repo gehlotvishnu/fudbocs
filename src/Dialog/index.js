@@ -6,15 +6,24 @@ import { saveSchedule, getSchedule, updateSchedule } from '../httpClient';
 import { getDaysInMonth, getMonth, getTodaysDate } from '../Helper';
 import TiffinDropDown from '../Common/tiffinDropDown';
 import Schedule from '../Dialog/Schedule';
+import Receipt from '../Bill';
 
 class DialogBox extends Component {
   constructor(props) {
     super(props);
-    this.state = {showDialog: false};
+    this.state = {showDialog: false, printBill: false};
 
     this.saveShedule = this.saveShedule.bind(this);
     this._getSchedule = this._getSchedule.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.printBill = this.printBill.bind(this);
+  }
+
+  printBill = () => {
+    // your axios call here
+    localStorage.setItem("pageData", "Data Retrieved from axios request")
+    // route to new page by changing window.location
+    window.open('http://localhost:3000/reciept', "_blank") //to open new page
   }
 
   setSchedule = (data) => {
@@ -155,6 +164,8 @@ class DialogBox extends Component {
             </div><br />
             
             <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
+            <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/>
+
             <br /><br />
             <div className="month"> 
                 <ul>

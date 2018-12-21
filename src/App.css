@@ -150,3 +150,101 @@
     transform: rotate(360deg);
   }
 }
+
+.receipt {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 1000px;
+  margin: auto;
+  border: 1px solid #eee;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+  font-size: 16px;
+  line-height: 24px;
+  color: #555;
+  background-color: #ffffed;
+}
+
+.head {
+  height: 132px;
+}
+
+.left-section {
+  width: 180px;
+  border-right: 1mm ridge rgba(211, 11, 11, 0.6);
+}
+
+.right-section {
+  width: 820px;
+}
+
+.receipt-table {
+  width: 100%;
+}
+
+.receipt-row-border-left {
+  border-top: 1px solid #969696;
+  height: 30px;
+}
+
+.receipt-row-border-right {
+  border-top: 1px solid #969696
+}
+
+.receipt-row-border-bottom {
+  border-bottom: 2px solid #000000
+}
+
+.receipt-row-border-top {
+  border-top: 2px solid #000000
+}
+
+.float-left{
+  float: left;
+  padding-left: 20px;
+  text-align: left;
+  font-weight: 100;
+}
+
+.float-right{
+  float: right;
+  font-weight: 100;
+  padding-right: 40px;
+}
+
+.width-160 {
+  width: 160px;
+}
+
+.width-400 {
+  width: 400px;
+}
+
+.height-115 {
+  height: 115px;
+}
+
+.reciept-invoice-font{
+  font-size: xx-large;
+}
+
+.recipt-logo {
+  color: #ef7a5a;
+  font-size: 21px;
+}
+
+.reciept-tag {
+  margin-top: -21px;
+  font-size: 11px;
+  color: #ef7a5a;
+}
+
+.receipt-row-border-bottom-red {
+  border-bottom: 2px solid #ef7a59;
+}
+
+.receipt-row-border-bottom-red:after {
+  content: ""; /* This is necessary for the pseudo element to work. */ 
+  display: block; /* This will put the pseudo element on its own line. */
+  margin: 0 auto; /* This will center the border. */
+  width: 50%; /* Change this to whatever width you want. */
+  border-bottom: 2px solid black; /* This creates the border. Replace black with whatever color you want. */
+}
