@@ -6,6 +6,8 @@
 //     console.log("Connection Opened");
 // });
 
+const ObjectID = require('mongodb').ObjectID
+
 const Customer = require('../schema/customer');
 const Schedule = require('../schema/schedule');
 
@@ -35,12 +37,16 @@ module.exports = {
             });
         });
     },
-    saveSchedule(scheduler) {
+    saveSchedule(scheduler, date) {
         return new Promise(function (resolve, reject) {
             scheduler.save()
-            .then(doc => {
-                console.log(doc);
-                resolve(doc);
+            .then(schedule => {
+                console.log(schedule);
+                if(schedule && schedule.TiffinSchedule[0][date.getFullYear()]) {
+                    resolve({_id: schedule._id, monthSchedule: schedule.TiffinSchedule[0][date.getFullYear()][date.getMonth() + 1]});
+                } else {
+                    resolve({});
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -83,8 +89,53 @@ module.exports = {
                 
                 // object of all the customera
                 console.log(schedule);
-                if(schedule.length > 0) {
+                if(schedule.length > 0 && schedule[0].TiffinSchedule[0][date1.getFullYear()]) {
                     resolve({_id: schedule[0]._id, monthSchedule: schedule[0].TiffinSchedule[0][date1.getFullYear()][date1.getMonth() + 1]});
+                } else {
+                    resolve({});
+                }
+            });
+        });
+    },
+    filterCustomer(date, tiffinType) {
+        return new Promise(function (resolve, reject) {
+            const newDate =  new Date(date);
+            
+            let Date1 = newDate.getFullYear() + '-' + (newDate.getMonth() + 1).toString() + '-' + newDate.getDate().toString();
+
+            // { 'TiffinSchedule.0.2019.1': {$elemMatch: {date: '2019-1-1','tiffin.launch': { '$exists' : true }}} }
+            let TiffinSchedule;
+
+            if(tiffinType === '2') {
+                TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1,['tiffin.dinner']: { '$exists' : true }}} };
+            } else if(tiffinType === '1') {
+                TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1,['tiffin.launch']: { '$exists' : true }}} };
+            } else if(tiffinType === '4') {
+                TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1,['tiffin.breakFast']: { '$exists' : true }}} };
+            } else if(tiffinType === '3') {
+                TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1,['tiffin.launch']: { '$exists' : true} , ['tiffin.dinner']: { '$exists' : true }}} };
+            } else {
+                tiffinType = undefined;
+            }
+
+            // let TiffinSchedule;
+            
+            // if(tiffinType) {
+            //     TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1,['tiffin.' + tiffinType]: { '$exists' : true }}} };
+            // } else {
+            //     if(date !== "") {
+            //         TiffinSchedule = {['TiffinSchedule.0.'+ newDate.getFullYear() +'.' + (newDate.getMonth() + 1).toString()] : { $elemMatch: {date: Date1}} };
+            //     } else {
+            //         TiffinSchedule = {};
+            //     }
+            // }
+
+            // get all the customer
+            Schedule.find(TiffinSchedule, function(err, schedule) {
+                if (err) throw err;
+                
+                if(schedule.length > 0) {
+                    resolve(schedule);
                 } else {
                     resolve({});
                 }

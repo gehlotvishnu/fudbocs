@@ -6,7 +6,7 @@ const Scheduler= require('./schema/schedule');
 
 const {getDates} = require('./helper');
 
-const { saveCustomer, getCustomer, saveSchedule, getSchedule, updateSchedule } = require('./db/connection');
+const { saveCustomer, getCustomer, saveSchedule, getSchedule, updateSchedule, filterCustomer } = require('./db/connection');
 
 module.exports = {
     
@@ -15,14 +15,19 @@ module.exports = {
             let tiffin = {};
             let scheduler = {};
 
-            if(data.tiffinType === "3") {
-                tiffin.launch = 40;
-                tiffin.dinner = 40;
-            } else if(data.tiffinType === "1") {
-                tiffin.launch = 40;
-            } else if(data.tiffinType === "2") {
-                tiffin.dinner = 40;
-            }
+            data.bill.map(function(obj) {
+                if(obj.tiffinType === '1') {
+                    tiffin.launch = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                } 
+                
+                if(obj.tiffinType === '2') {
+                    tiffin.dinner = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                } 
+                
+                if(obj.tiffinType === '4') {
+                    tiffin.breakFast = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                }
+            });
 
             scheduler.customerId = data.customerId;
             scheduler.Id = new Object(data._id);
@@ -40,27 +45,30 @@ module.exports = {
             scheduler = new Scheduler();
             let tiffin = {};
 
-            if(data.tiffinType === "3") {
-                tiffin.launch = 40;
-                tiffin.dinner = 40;
-            } else if(data.tiffinType === "1") {
-                tiffin.launch = 40;
-            } else if(data.tiffinType === "2") {
-                tiffin.dinner = 40;
-            }
-
+            data.bill.map(function(obj) {
+                if(obj.tiffinType === '1') {
+                    tiffin.launch = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                } 
+                
+                if(obj.tiffinType === '2') {
+                    tiffin.dinner = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                } 
+                
+                if(obj.tiffinType === '4') {
+                    tiffin.breakFast = {amount: Number(obj.amount), qty: Number(obj.qty)};
+                }
+            });
+           
             const dateSchedule = getDates(new Date(data.startDate), new Date(data.endDate), tiffin, data.isWeekend);
             const date = new Date(data.startDate);
             let obj = {
-                [date.getFullYear()]: dateSchedule,
+                [date.getFullYear()]: dateSchedule
             }
 
             scheduler.CustomerId = new Object(data.customerId);
             scheduler.TiffinSchedule = obj
-            return saveSchedule(scheduler).then(function(data) {
-                return getCustomer().then(function(customers) {
-                    resolve(customers);
-                })
+            return saveSchedule(scheduler, date).then(function(data) {
+                resolve(data);
             });
         });
     },
@@ -73,6 +81,7 @@ module.exports = {
             customer.Mobile = data.mobile;
             customer.Email = data.email;
             customer.CityName = data.cityName;
+            customer.Remark = data.remark;
             customer.Sex = data.sex;
 
             return saveCustomer(customer).then(function(data) {
@@ -92,6 +101,13 @@ module.exports = {
     getSchedule(customerId, date) {
         return new Promise(function (resolve, reject) {
             return getSchedule(customerId, date).then(function(schedule) {
+                resolve(schedule);
+            })
+        });
+    },
+    filterCustomer(date, tiffinType) {
+        return new Promise(function (resolve, reject) {
+            return filterCustomer(date, tiffinType).then(function(schedule) {
                 resolve(schedule);
             })
         });

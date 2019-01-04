@@ -3,6 +3,7 @@ import './App.css';
 import Customer from './Customer';
 import DialogBox from './Dialog'
 import TiffinDropDown from './Common/tiffinDropDown';
+import { filterCustomer } from './httpClient';
 
 class App extends Component {
   constructor(props) {
@@ -16,43 +17,111 @@ class App extends Component {
   }
   
   componentDidMount() {
-    const that = this;
+    document.querySelector("#Date_Search").valueAsDate = new Date();
+  }
+
+  resetCustomer() {
+    const customers = this.state.originalList.slice();
+    this.setState({customers: customers, originalList: customers})
   }
 
   setCustomers(customers) {
     this.setState({customers: customers, originalList: customers})
   }
 
-  filterCustomer() {
+  filterCustomer(isServer) {
+    const that = this;
+
     const products = this.state.originalList.slice();
     const firstName = document.getElementById('FirstName_Search').value;
     const lastName = document.getElementById('LastName_Search').value;
-    const tiffinType = document.getElementById('TiffinType_Search').value;
+    const addressSearch = document.getElementById('Address_Search').value;
+    let tiffinType;
     const date = document.getElementById('Date_Search').value;
 
+    if(document.getElementById('Launch_Search').checked && document.getElementById('Dinner_Search').checked) {
+      tiffinType = '3';
+    } else if(document.getElementById('Launch_Search').checked) {
+      tiffinType = '1';
+    } else if(document.getElementById('Dinner_Search').checked) {
+      tiffinType = '2';
+    } else if(document.getElementById('BreakFast_Search').checked) {
+      tiffinType = '4';
+    }
+    
     let newProducts = [];
     let insert = true;
 
-    products.map(function(customer) {
-      insert = true;
+    if(isServer) {
+      filterCustomer(date, tiffinType).then(function(data) {
+        let tempNewProducts = [];
 
-      if(firstName !== '' && customer.FirstName.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
-        insert = false;
-      }
+        products.map(function(customer) {
+          insert = true;
+    
+          if(firstName !== '' && customer.FirstName.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
+            insert = false;
+          }
+    
+          if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
+            insert = false;
+          }
+  
+          if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
+            insert = false;
+          }
+    
+          if(customer.TiffinType && tiffinType !== '' && customer.TiffinType.indexOf(tiffinType) === -1) {
+            insert = false;
+          }
+  
+          insert && tempNewProducts.push(customer);
+    
+        });
 
-      if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
-        insert = false;
-      }
+        tempNewProducts.map(function(customer) {
+          insert = false;
+    
+          if(data && data.length > 0) {
+            data.map(function(schedule) {
+              if(customer._id === schedule.CustomerId) {
+                insert = true;
+              }
+            });
+           
+            insert && newProducts.push(customer);
+          }
+        });
+    
+        that.setState({customers:newProducts});
+        
+      });
+    } else {
+      products.map(function(customer) {
+        insert = true;
+  
+        if(firstName !== '' && customer.FirstName.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
+          insert = false;
+        }
+  
+        if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
+          insert = false;
+        }
 
-      if(customer.TiffinType && tiffinType !== '' && customer.TiffinType.indexOf(tiffinType) === -1) {
-        insert = false;
-      }
+        if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
+          insert = false;
+        }
+  
+        if(customer.TiffinType && tiffinType !== '' && customer.TiffinType.indexOf(tiffinType) === -1) {
+          insert = false;
+        }
 
-      insert && newProducts.push(customer);
-
-    });
-
-    this.setState({customers:newProducts});
+        insert && newProducts.push(customer);
+  
+      });
+  
+      this.setState({customers:newProducts});
+    }
   }
 
 
@@ -67,12 +136,16 @@ class App extends Component {
         <div className="App">
           Welcome Admin <br /> <br />
 
-          Search Customer: 
-          First Name: <input type='text' id='FirstName_Search' onChange={this.filterCustomer} />
-          &nbsp; Last Name: <input type='text' id='LastName_Search' onChange={this.filterCustomer} />
-          &nbsp; <TiffinDropDown id="Search"/> 
-          &nbsp; Date: <input type='date' id='Date_Search' />
-          &nbsp; <input type='button' id='Search' value='Search'/>
+          Filter: 
+          First Name: <input type='text' id='FirstName_Search' onChange={() => this.filterCustomer(true)} />
+          &nbsp; Last Name: <input type='text' id='LastName_Search' onChange={() => this.filterCustomer(true)} />
+          &nbsp; Address: <input type='text' id='Address_Search' onChange={() => this.filterCustomer(true)} />
+          &nbsp; Break Fast: <input type='checkbox' name='breakFast' id='BreakFast_Search' value='Break Fast' />
+          Launch: <input type='checkbox' name='launch' id='Launch_Search' value='Break Fast' />
+          Dinner: <input type='checkbox' name='dinner' id='Dinner_Search' value='Break Fast' />
+          &nbsp; Date: <input type='date' id='Date_Search' min="2018-11-30"/>
+          &nbsp; <input type='button' id='Search' value='Search' onClick={() => this.filterCustomer(true)}/>
+          &nbsp; <input type='button' id="Reset" value='Reset' onClick={() => this.resetCustomer()} />
           <hr />
           <Customer setCustomers={this.setCustomers} customers={this.state.customers} openDialog={this.openDialog}/>
           {/* <Basic /> */}

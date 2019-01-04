@@ -15,15 +15,15 @@ let customerSchema = new mongoose.Schema({
   },
   Mobile: {
     type: String,
-    required: true
+    required: true,
+    // unique: true
+    // lowercase: true,
+    // validate: (value) => {
+    //   return validator.isEmail(value)
+    // }
   },
   Email: {
-    type: String,
-    unique: true,
-    lowercase: true,
-    validate: (value) => {
-      return validator.isEmail(value)
-    }
+    type: String
   },
   AlternateNo: {
     type: String,
@@ -31,6 +31,9 @@ let customerSchema = new mongoose.Schema({
   CityName: {
     type: String,
     required: true
+  },
+  Remark: {
+    type: String
   },
   Sex: {
     type: String,

@@ -76,4 +76,18 @@ export const getSchedule = function (query) {
     })
 }
 
+export const filterCustomer = function (date, tiffinType) {
+    return new Promise(function (resolve, reject) {
+        axios('api/filterCustomer?date=' + date + '&tiffinType=' + tiffinType, {
+            method: 'GET',
+        }).then(res => {
+            resolve(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
 //Ender\'s+Game

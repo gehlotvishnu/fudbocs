@@ -8,7 +8,7 @@ const getCustomers = require('./index').getCustomers;
 const saveSchedule = require('./index').saveSchedule;
 const getSchedule = require('./index').getSchedule;
 const updateSchedule = require('./index').updateSchedule;
-const getBookAuthorDetails = require('./index').getBookAuthorDetails;
+const filterCustomer = require('./index').filterCustomer;
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -45,6 +45,10 @@ app.get('/api/getSchedule', function (req, res) {
 
 app.get('/api/getAuthorDetails', function (req, res) {
   getBookAuthorDetails(req.query.q).then(authorDetails => res.send(authorDetails));
+});
+
+app.get('/api/filterCustomer', function (req, res) {
+  filterCustomer(req.query.date, req.query.tiffinType).then(authorDetails => res.send(authorDetails));
 });
 
 app.get('/', function (req, res) {

@@ -11,7 +11,7 @@ import Receipt from '../Bill';
 class DialogBox extends Component {
   constructor(props) {
     super(props);
-    this.state = {showDialog: false, printBill: false};
+    this.state = {showDialog: false, printBill: false, showSchedulerInput: false};
 
     this.saveShedule = this.saveShedule.bind(this);
     this._getSchedule = this._getSchedule.bind(this);
@@ -32,13 +32,27 @@ class DialogBox extends Component {
 
   saveShedule() {
       const that = this;
+      let bill = [];
+
+      if(document.getElementById('BreakFast_Schedule').checked) {
+        bill.push({tiffinType: '4', amount: document.getElementById('Amount_BreakFast_Schedule').value, qty: document.getElementById('Quantity_BreakFast_Schedule').value})
+      }
+
+      if(document.getElementById('Launch_Schedule').checked) {
+        bill.push({tiffinType: '1', amount: document.getElementById('Amount_Launch_Schedule').value, qty: document.getElementById('Quantity_Launch_Schedule').value})
+      }
+
+      if(document.getElementById('Dinner_Schedule').checked) {
+        bill.push({tiffinType: '2', amount: document.getElementById('Amount_Dinner_Schedule').value, qty: document.getElementById('Quantity_Dinner_Schedule').value})
+      }
 
       const obj = {
         startDate: document.getElementById('StartDate').value,
         endDate: document.getElementById('EndDate').value,
         customerId: this.props.customerId,
-        tiffinType: document.getElementById('TiffinType_Schedule').value,
-        isWeekend: document.getElementById('Yes').checked
+        // tiffinType: document.getElementById('TiffinType_Schedule').value,
+        isWeekend: document.getElementById('Yes').checked,
+        bill: bill
     }
 
     saveSchedule(obj).then(function(schedule) {
@@ -52,9 +66,18 @@ class DialogBox extends Component {
     if(prevProps.customerId !== this.props.customerId) {
         this._getSchedule();
     }
+
+    return false;
   }
 
   componentDidMount() {
+    let date = new Date();
+
+    if(document.querySelector("#StartDate")) document.querySelector("#StartDate").valueAsDate = new Date(date.getFullYear(), date.getMonth(), 2);
+    if(document.querySelector("#EndDate")) document.querySelector("#EndDate").valueAsDate =  new Date(date.getFullYear(), date.getMonth() + 1, 1);
+
+    // document.getElementById("StartDate").defaultValue = defaultStartDate;
+
       this._getSchedule();
   }
 
@@ -63,7 +86,16 @@ class DialogBox extends Component {
   }
 
   updateSchedule(index, day, date) {
-    this.setState({showDialog: true, index: index, date: date.year() + "-" + (date.month() + 1) + "-" + day});
+    let newDate = date.year() + "-" + (date.month() + 1) + "-" + day;
+    let tiffin;
+
+    this.state.schedule.monthSchedule.map(function(data) {
+        if(data.date === newDate){
+            tiffin = data.tiffin;
+        }
+    });
+
+    this.setState({showDialog: true, index: index, date: newDate, tiffin: tiffin});
   }
 
   _getSchedule(date) {
@@ -71,7 +103,11 @@ class DialogBox extends Component {
 
     getSchedule({customerId: this.props.customerId, date: date}).then(function(schedule) {
         console.log("Schedule.............", schedule);
-        that.setState({schedule});
+        if(schedule.monthSchedule) {
+            that.setState({schedule, showSchedulerInput: false});
+        } else {
+            that.setState({showSchedulerInput: true});
+        }
       });
   }
 
@@ -146,26 +182,29 @@ class DialogBox extends Component {
             }>
             {/* {this.props.customerId} <br /> */}
             <br />
-            Start Date: <input type='date' name='startDate' id='StartDate' /> &nbsp;
-            End Date: <input type='date' name='endDate' id='EndDate' /> <br /><br />
-            
-            <div>
+           
+           {
+               this.state.showSchedulerInput && <div>
+               Start Date: <input type='date' name='startDate' id='StartDate' /> &nbsp;
+               End Date: <input type='date' name='endDate' id='EndDate' /> <br /><br />
+                  <TiffinDropDown id="Schedule" tiffin={{breakFast: {amount: 40, qty: 1}, launch: {amount: 40, qty: 1}, dinner: {amount: 40, qty: 1} }}/> &nbsp; &nbsp;<br />
+                   <label>Include Weekends:</label> &nbsp;
+                   <input type="radio" id="Yes" name="drone" value="yes"
+                           checked />
+                   <label htmlFor="Yes">Yes</label>&nbsp;
+                   <input type="radio" id="No" name="drone" value="no" />
+                   <label htmlFor="No">No</label> <br />
+                   {/* <label>Amount:</label> &nbsp;
+                   <input type='text' name='amount' id='Amount' defaultValue='40' /> */}
+               </div>
+           } 
 
-               <TiffinDropDown id="Schedule" /> &nbsp;
-                <label>Include Weekends:</label> &nbsp;
-                <input type="radio" id="Yes" name="drone" value="yes"
-                        checked />
-                <label htmlFor="Yes">Yes</label>&nbsp;
-                <input type="radio" id="No" name="drone" value="no" />
-                <label htmlFor="No">No</label>
-            </div>
-            <div>
-               
-            </div><br />
-            
-            <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
-            <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/>
-
+           {
+               this.state.showSchedulerInput === undefined ?
+               <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/>
+               :
+                <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
+           }
             <br /><br />
             <div className="month"> 
                 <ul>
@@ -196,7 +235,7 @@ class DialogBox extends Component {
 
             {
 
-                this.state.showDialog && <Schedule index={this.state.index} _id={this.state.schedule._id} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
+                this.state.showDialog && <Schedule index={this.state.index} _id={this.state.schedule._id} tiffin={this.state.tiffin} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
             }
         </Dialog>
         )

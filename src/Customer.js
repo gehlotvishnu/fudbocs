@@ -29,7 +29,8 @@ class Customer extends Component {
       email: document.getElementById('Email_0').value,
       sex: document.getElementById('Sex_0').value,
       mobile: document.getElementById('Mobile_0').value,
-      cityName: document.getElementById('CityName_0').value
+      cityName: document.getElementById('CityName_0').value,
+      remark: document.getElementById('Remark_0').value
     }
 
     saveCustomer(obj).then(function(customers){
@@ -51,6 +52,7 @@ class Customer extends Component {
                    <th>Sex</th>
                    <th>Mobile</th>
                    <th>Address</th>
+                   <th>Remark</th>
                    <th>Action</th>
                  </tr>
                </thead>
@@ -73,6 +75,7 @@ class Customer extends Component {
                    </td>
                    <td><input type='text' name='mobile' id='Mobile_0' /></td>
                    <td><input type='text' name='cityName' id='CityName_0' /></td>
+                   <td><input type='text' name='remark' id='Remark_0' /></td>
                    {/* <td>
                       <select id='TiffinType_0'>
                         <option value="1">Launch</option>
@@ -107,6 +110,9 @@ class Customer extends Component {
                           </td>
                           <td>
                             <label type='text' name="cityName" id={`CityName_${index}`}>{customer.CityName}</label>
+                          </td>
+                          <td>
+                            <label type='text' name="remark" id={`Remark_${index}`}>{customer.Remark}</label>
                           </td>
                           <td>
                               <input type='button' name='schedule' id={`Schedule_${index}`} value='Schedule' onClick={() => that.props.openDialog(customer._id)}/>

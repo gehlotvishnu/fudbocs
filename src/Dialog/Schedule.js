@@ -16,13 +16,27 @@
 
 	_updateSchedule() {
 		const { props } = this;
+		let bill = [];
+
+		if(document.getElementById('BreakFast_Update').checked) {
+			bill.push({tiffinType: '4', amount: document.getElementById('Amount_BreakFast_Update').value, qty: document.getElementById('Quantity_BreakFast_Update').value})
+		  }
+	
+		  if(document.getElementById('Launch_Update').checked) {
+			bill.push({tiffinType: '1', amount: document.getElementById('Amount_Launch_Update').value, qty: document.getElementById('Quantity_Launch_Update').value})
+		  }
+	
+		  if(document.getElementById('Dinner_Update').checked) {
+			bill.push({tiffinType: '2', amount: document.getElementById('Amount_Dinner_Update').value, qty: document.getElementById('Quantity_Dinner_Update').value})
+		  }
 
 		const obj = {
 			_id: props._id,
 			customerId: props.customerId,
 			index: props.index,
 			date: props.date,
-			tiffinType: document.getElementById('TiffinType_Update').value,
+			bill: bill
+			// tiffinType: document.getElementById('TiffinType_Update').value,
 		}
 
 		updateSchedule(obj).then(function(data) {
@@ -45,8 +59,8 @@
 						}]
 			}>
 				<h3>{this.props.date}</h3>
-				<TiffinDropDown id="Update"/>
-				&nbsp;&nbsp;&nbsp;
+				<TiffinDropDown id="Update" tiffin={this.props.tiffin} />
+				&nbsp;&nbsp;&nbsp; <br />
 				<input type='button' name='updateSchedule' id='UpdateShedule' value='Update' onClick={() => this._updateSchedule()}/>
 
 			</Dialog>
