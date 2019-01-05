@@ -87,7 +87,7 @@ class DialogBox extends Component {
 
   updateSchedule(index, day, date) {
     let newDate = date.year() + "-" + (date.month() + 1) + "-" + day;
-    let tiffin;
+    let tiffin = {};
 
     this.state.schedule.monthSchedule.map(function(data) {
         if(data.date === newDate){

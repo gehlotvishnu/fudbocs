@@ -136,13 +136,13 @@ class App extends Component {
         <div className="App">
           Welcome Admin <br /> <br />
 
-          Filter: 
-          First Name: <input type='text' id='FirstName_Search' onChange={() => this.filterCustomer(true)} />
-          &nbsp; Last Name: <input type='text' id='LastName_Search' onChange={() => this.filterCustomer(true)} />
+          <strong>Filter: </strong>
+          Name: <input type='text' id='FirstName_Search' onChange={() => this.filterCustomer(true)} />
+          {/* &nbsp; Last Name: <input type='text' id='LastName_Search' onChange={() => this.filterCustomer(true)} /> */}
           &nbsp; Address: <input type='text' id='Address_Search' onChange={() => this.filterCustomer(true)} />
-          &nbsp; Break Fast: <input type='checkbox' name='breakFast' id='BreakFast_Search' value='Break Fast' />
-          Launch: <input type='checkbox' name='launch' id='Launch_Search' value='Break Fast' />
-          Dinner: <input type='checkbox' name='dinner' id='Dinner_Search' value='Break Fast' />
+          &nbsp; <input type='checkbox' name='breakFast' id='BreakFast_Search' value='Break Fast' /> Break Fast |
+          &nbsp; <input type='checkbox' name='launch' id='Launch_Search' value='Break Fast' /> Launch |
+          &nbsp; <input type='checkbox' name='dinner' id='Dinner_Search' value='Break Fast' /> Dinner |
           &nbsp; Date: <input type='date' id='Date_Search' min="2018-11-30"/>
           &nbsp; <input type='button' id='Search' value='Search' onClick={() => this.filterCustomer(true)}/>
           &nbsp; <input type='button' id="Reset" value='Reset' onClick={() => this.resetCustomer()} />
