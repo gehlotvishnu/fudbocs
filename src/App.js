@@ -34,7 +34,7 @@ class App extends Component {
 
     const products = this.state.originalList.slice();
     const firstName = document.getElementById('FirstName_Search').value;
-    const lastName = document.getElementById('LastName_Search').value;
+    // const lastName = document.getElementById('LastName_Search').value;
     const addressSearch = document.getElementById('Address_Search').value;
     let tiffinType;
     const date = document.getElementById('Date_Search').value;
@@ -63,9 +63,9 @@ class App extends Component {
             insert = false;
           }
     
-          if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
-            insert = false;
-          }
+          // if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
+          //   insert = false;
+          // }
   
           if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
             insert = false;
@@ -104,9 +104,9 @@ class App extends Component {
           insert = false;
         }
   
-        if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
-          insert = false;
-        }
+        // if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
+        //   insert = false;
+        // }
 
         if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
           insert = false;
