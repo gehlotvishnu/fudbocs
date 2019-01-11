@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import './index.css';
 import App from './App';
 import Bill from './Bill';
+import Print from './Print';
 
 import * as serviceWorker from './serviceWorker';
 
@@ -13,6 +14,7 @@ ReactDOM.render((
         <Switch>
             <Route exact path='/' component={App}/>
             <Route path='/reciept' component={Bill}/>
+            <Route path='/print-customer' component={Print}/>
         </Switch>
         </main>
     </BrowserRouter>

@@ -248,3 +248,15 @@
   width: 50%; /* Change this to whatever width you want. */
   border-bottom: 2px solid black; /* This creates the border. Replace black with whatever color you want. */
 }
+
+.fade:not(.show) {
+  opacity: 1 !important;
+}
+
+.modal-dialog {
+  max-width: 740px;
+}
+
+.table td {
+  padding: 1px;
+}
