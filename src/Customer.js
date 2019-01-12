@@ -34,7 +34,13 @@ class Customer extends Component {
     }
 
     saveCustomer(obj).then(function(customers){
-        that.props.setCustomers(customers);
+      document.getElementById('FirstName_0').value = 'Mr. ';
+      document.getElementById('Email_0').value = '';
+      document.getElementById('Mobile_0').value = '';
+      document.getElementById('CityName_0').value = '';
+      document.getElementById('Remark_0').value = '';
+
+      that.props.setCustomers(customers);
     });
   }
 

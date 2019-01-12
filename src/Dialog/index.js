@@ -107,6 +107,11 @@ class DialogBox extends Component {
             that.setState({schedule, showSchedulerInput: false});
         } else {
             that.setState({showSchedulerInput: true});
+
+            let date = new Date();
+
+            if(document.querySelector("#StartDate")) document.querySelector("#StartDate").valueAsDate = new Date(date.getFullYear(), date.getMonth(), 2);
+            if(document.querySelector("#EndDate")) document.querySelector("#EndDate").valueAsDate =  new Date(date.getFullYear(), date.getMonth() + 1, 1);
         }
       });
   }
@@ -196,15 +201,11 @@ class DialogBox extends Component {
                    <label htmlFor="No">No</label> <br />
                    {/* <label>Amount:</label> &nbsp;
                    <input type='text' name='amount' id='Amount' defaultValue='40' /> */}
+                   <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
                </div>
            } 
 
-           {
-               this.state.showSchedulerInput === undefined ?
-               <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/>
-               :
-                <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
-           }
+          
             <br /><br />
             <div className="month"> 
                 <ul>
@@ -230,7 +231,10 @@ class DialogBox extends Component {
                     {this.createCalendar(getTodaysDate())}
                 </tbody>
             </table>
-           
+            {/* {
+               this.state.showSchedulerInput === undefined ?
+               <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/> : ''
+           } */}
             {/* <li><span class="active">10</span></li> */}
 
             {
