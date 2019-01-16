@@ -137,7 +137,7 @@ class App extends Component {
     }
   }
 
-  openDialog = (id) => this.setState({ isDialogOpen: true, customerId: id })
+  openDialog = (id, customerName) => this.setState({ isDialogOpen: true, customerId: id, customerName: customerName })
  
   handleClose = () => this.setState({ isDialogOpen: false })
 
@@ -255,7 +255,7 @@ class App extends Component {
           }
           {
               this.state.isDialogOpen &&
-              <DialogBox handleClose={this.handleClose} customerId={this.state.customerId}/>
+              <DialogBox handleClose={this.handleClose} customerId={this.state.customerId} customerName={this.state.customerName}/>
           }
         </div>
     ]

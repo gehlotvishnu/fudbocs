@@ -1,6 +1,7 @@
 
 
 	import React, { Component } from 'react';
+	import { FormControl, Grid, Row, Col, Checkbox  } from 'react-bootstrap';
 
 	export default class TiffinDropDown extends Component {
 	constructor(props) {
@@ -45,22 +46,27 @@
 
   render() {
     return <div>
-							<span>Break Fast:</span>
-							<input type='checkbox' name='breakFast' id={'BreakFast_' + this.props.id} value='Break Fast' defaultChecked={this.props.tiffin.breakFast ? 'checked' : ''} onClick={() => this.handleCheckboxClick(4, this.props.id)}/>
-							<input type='text' name='amount' id={'Amount_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.amount : ''} size='5'/> &nbsp;
-							<input type='text' name='quantity' id={'Quantity_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.qty : '1'} size='5'/> &nbsp;
+				<Grid>
+					<Row className="show-grid">
+						<Col md={4} mdPush={4}>
+							<Checkbox  type='checkbox' name='breakFast' id={'BreakFast_' + this.props.id} value='Break Fast' defaultChecked={this.props.tiffin.breakFast ? 'checked' : ''} onClick={() => this.handleCheckboxClick(4, this.props.id)}>Break Fast</Checkbox>							
+							<FormControl type='text' name='amount' id={'Amount_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.amount : ''} size='5'/> 
+							<FormControl type='text' name='quantity' id={'Quantity_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.qty : '1'} size='5'/> 
+						</Col>
+						<Col md={4} mdPull={4}>
+							<Checkbox  type='checkbox' name='launch' id={'Launch_' + this.props.id} value='Launch' defaultChecked={this.props.tiffin.launch ? 'checked' : ''} onClick={() => this.handleCheckboxClick(1, this.props.id)}>Launch</Checkbox>
+							<FormControl type='text' name='amount' id={'Amount_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.amount : ''} size='5'/> 
+							<FormControl type='text' name='quantity' id={'Quantity_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.qty : '1'} size='5'/> 
+						</Col>
 
-							<span>Launch:</span>
-							<input type='checkbox' name='launch' id={'Launch_' + this.props.id} value='Launch' defaultChecked={this.props.tiffin.launch ? 'checked' : ''} onClick={() => this.handleCheckboxClick(1, this.props.id)}/>
-							<input type='text' name='amount' id={'Amount_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.amount : ''} size='5'/> &nbsp;
-							<input type='text' name='quantity' id={'Quantity_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.qty : '1'} size='5'/> &nbsp;
-
-							<span>Dinner:</span>
-							<input type='checkbox' name='dinner' id={'Dinner_' + this.props.id} value='Dinner' defaultChecked={this.props.tiffin.dinner ? 'checked' : ''} onClick={() => this.handleCheckboxClick(2, this.props.id)}/>
-							<input type='text' name='amount' id={'Amount_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.amount : ''} size='5'/> &nbsp;
-							<input type='text' name='quantity' id={'Quantity_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.qty : '1'} size='5'/> &nbsp;
-
-						</div>
+						<Col md={4} mdPull={4}>
+							<Checkbox  type='checkbox' name='dinner' id={'Dinner_' + this.props.id} value='Dinner' defaultChecked={this.props.tiffin.dinner ? 'checked' : ''} onClick={() => this.handleCheckboxClick(2, this.props.id)}>Dinner</Checkbox>
+							<FormControl type='text' name='amount' id={'Amount_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.amount : ''} size='5'/> 
+							<FormControl type='text' name='quantity' id={'Quantity_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.qty : '1'} size='5'/> 
+						</Col>
+					</Row>
+				</Grid>
+			</div>
   }
 }
 

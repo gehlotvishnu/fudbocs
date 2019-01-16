@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 import Dialog from 'react-dialog'
+import { Modal, Button, FormControl, Grid, Row, Col } from 'react-bootstrap';
+
 import { saveSchedule, getSchedule, updateSchedule } from '../httpClient';
 import { getDaysInMonth, getMonth, getTodaysDate } from '../Helper';
 import TiffinDropDown from '../Common/tiffinDropDown';
@@ -175,24 +177,32 @@ class DialogBox extends Component {
   render() {
 
     return (
-        <Dialog
+        <Modal
             title="Manage Schedule"
-            modal={true}
-            onClose={this.props.handleClose}
-            buttons={
-                [{
-                    text: "Close",
-                    onClick: () => this.props.handleClose()
-                }]
-            }>
-            {/* {this.props.customerId} <br /> */}
-            <br />
-           
+            show={true}
+            onHide={this.props.handleClose} >
+            <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Tiffin Calendar
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <label><strong>{this.props.customerName}</strong> Tiffing Schedule</label>
+            <hr />
+
            {
                this.state.showSchedulerInput && <div>
-               Start Date: <input type='date' name='startDate' id='StartDate' /> &nbsp;
-               End Date: <input type='date' name='endDate' id='EndDate' /> <br /><br />
-                  <TiffinDropDown id="Schedule" tiffin={{breakFast: {amount: 40, qty: 1}, launch: {amount: 40, qty: 1}, dinner: {amount: 40, qty: 1} }}/> &nbsp; &nbsp;<br />
+                   <Grid>
+                    <Row className="show-grid">
+                        <Col md={6} mdPush={6}>
+                        Start Date: <FormControl type='date' name='startDate' id='StartDate' />
+                        </Col>
+                        <Col md={6} mdPull={6}>
+                        End Date: <FormControl type='date' name='endDate' id='EndDate' />
+                        </Col>
+                    </Row>
+                    </Grid>
+                  <TiffinDropDown id="Schedule" tiffin={{breakFast: {amount: 20, qty: 1}, launch: {amount: 40, qty: 1}, dinner: {amount: 40, qty: 1} }}/> &nbsp; &nbsp;<br />
                    <label>Include Weekends:</label> &nbsp;
                    <input type="radio" id="Yes" name="drone" value="yes"
                            checked />
@@ -204,9 +214,7 @@ class DialogBox extends Component {
                    <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
                </div>
            } 
-
-          
-            <br /><br />
+           </Modal.Body>
             <div className="month"> 
                 <ul>
                     <li className="prev">&#10094;</li>
@@ -214,7 +222,6 @@ class DialogBox extends Component {
                     <li>{getMonth(getTodaysDate().month())}<br /><span>{getTodaysDate().year()}</span></li>
                 </ul>
             </div>
-
             <table className="weekdays">
                 <thead>
                 <tr>
@@ -231,17 +238,19 @@ class DialogBox extends Component {
                     {this.createCalendar(getTodaysDate())}
                 </tbody>
             </table>
-            {/* {
-               this.state.showSchedulerInput === undefined ?
-               <input type='button' name='printBill' id='PrintBill' value='Print Bill' onClick={() => this.printBill()}/> : ''
-           } */}
-            {/* <li><span class="active">10</span></li> */}
-
             {
-
                 this.state.showDialog && <Schedule index={this.state.index} _id={this.state.schedule._id} tiffin={this.state.tiffin} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
             }
-        </Dialog>
+            <Modal.Footer>
+            <Button variant="secondary" type="button" 
+              style={{
+                marginLeft: 30
+              }}
+              onClick={() => this.props.handleClose()}>
+              Close
+            </Button>
+            </Modal.Footer>
+        </Modal>
         )
     }
 }

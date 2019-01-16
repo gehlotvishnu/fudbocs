@@ -1,7 +1,7 @@
 
 
 	import React, { Component } from 'react';
-	import Dialog from 'react-dialog'
+	import { Modal, Button } from 'react-bootstrap';
 
 	import TiffinDropDown from '../Common/tiffinDropDown';
 
@@ -48,22 +48,33 @@
 
   render() {
     return [
-			<Dialog
+			<Modal
 				title="Update Schedule"
-				modal={true}
-				onClose={this.props.handleClose}
-				buttons={
-						[{
-								text: "Close",
-								onClick: () => this.props.handleClose()
-						}]
-			}>
-				<h3>{this.props.date}</h3>
-				<TiffinDropDown id="Update" tiffin={this.props.tiffin} />
-				&nbsp;&nbsp;&nbsp; <br />
-				<input type='button' name='updateSchedule' id='UpdateShedule' value='Update' onClick={() => this._updateSchedule()}/>
+				show={true}
+				onHide={this.props.handleClose}
+				>
+				 <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Schedule Tiffin
+            </Modal.Title>
+          </Modal.Header>
+				<Modal.Body>
+					<h4>{this.props.date}</h4>
+					<hr />
+					<TiffinDropDown id="Update" tiffin={this.props.tiffin} />
+				</Modal.Body>
+				<Modal.Footer>
+					<input type='button' name='updateSchedule' id='UpdateShedule' value='Update' onClick={() => this._updateSchedule()}/>
 
-			</Dialog>
+					<Button variant="secondary" type="button" 
+						style={{
+							marginLeft: 30
+						}}
+						onClick={() => this.props.handleClose()}>
+						Close
+					</Button>
+					</Modal.Footer>
+			</Modal>
 			]
   }
 }

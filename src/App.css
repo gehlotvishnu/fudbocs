@@ -253,10 +253,6 @@
   opacity: 1 !important;
 }
 
-.modal-dialog {
-  max-width: 740px;
-}
-
 .table td {
   padding: 1px;
 }
