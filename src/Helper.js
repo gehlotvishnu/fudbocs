@@ -19,6 +19,14 @@ export const getTodaysDate = function() {
     return moment();
 }
 
+export const getTodaysDateWithTime = function() {
+    return new moment().format("DD-MM-YYYY HH:mm:ss");
+}
+
+export const getTodaysDateMMDDYYYY = function() {
+    return new moment().format("DD-MM-YYYY");
+}
+
 // export const getMonth = function(date) {
 //     return moment(date).getMonth();
 // }

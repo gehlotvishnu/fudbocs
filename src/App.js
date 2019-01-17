@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import 'jspdf-autotable';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,6 +10,7 @@ import Print from './Print';
 import DialogBox from './Dialog'
 import TiffinDropDown from './Common/tiffinDropDown';
 import { filterCustomer } from './httpClient';
+import { getTodaysDateWithTime, getTodaysDateMMDDYYYY } from './Helper';
 
 class App extends Component {
   constructor(props) {
@@ -142,17 +143,76 @@ class App extends Component {
   handleClose = () => this.setState({ isDialogOpen: false })
 
   printDocument() {
-    const input = document.getElementById('divToPrint');
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'JPEG', 0, 0);
-        // pdf.output('dataurlnewwindow');
-        pdf.save("download.pdf");
-      });
-  }
+    var pdfsize = 'a4';
+    var pdf = new jsPDF('l', 'pt', pdfsize);
+  
+    var res = pdf.autoTableHtmlToJson(document.getElementById("divToPrint"));
+  
+    var totalPagesExp = pdf.internal.getNumberOfPages();
 
+    var pageContent = function (data) {
+        // HEADER
+        pdf.setFontSize(18);
+        pdf.setTextColor(40);
+        pdf.setFontStyle('normal');
+   
+        pdf.text("Customer Tiffin List - " + getTodaysDateWithTime(), data.settings.margin.left, 50);
+
+        // FOOTER
+        var str = "Page " + data.pageCount;
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof pdf.putTotalPages === 'function') {
+            str = str; //+ " of " + totalPagesExp;
+        }
+        pdf.setFontSize(10);
+        pdf.text(str, data.settings.margin.left, pdf.internal.pageSize.height - 10);
+    };
+  
+    pdf.autoTable(res.columns, res.data, {
+      didDrawPage: pageContent,
+      // beforePageContent: header,
+      startY: 60,
+      drawHeaderRow: function(row, data) {
+        row.height = 46;
+      },
+      drawHeaderCell: function(cell, data) {
+        pdf.rect(cell.x, cell.y, cell.width, cell.height, cell.styles.fillStyle);
+        pdf.setFillColor(230);
+        pdf.rect(cell.x, cell.y + (cell.height / 2), cell.width, cell.height / 2, cell.styles.fillStyle);
+        pdf.autoTableText(cell.text, cell.textPos.x, cell.textPos.y, {
+          halign: cell.styles.halign,
+          valign: cell.styles.valign
+        });
+        pdf.setTextColor(100);
+        var text = data.table.rows[0].cells[data.column.dataKey].text;
+        pdf.autoTableText(text, cell.textPos.x, cell.textPos.y + (cell.height / 2), {
+          halign: cell.styles.halign,
+          valign: cell.styles.valign
+        });
+
+        return false;
+      },
+      drawRow: function(row, data) {
+        if (row.index === 0) return false;
+      },
+      margin: {
+        top: 60
+      },
+      styles: {
+        overflow: 'linebreak',
+        fontSize: 10,
+        tableWidth: 'auto',
+        cellWidth: 'auto',
+      },
+      columnStyles: {
+        1: {
+          cellWidth: 'auto'
+        }
+      },
+    });
+  
+    pdf.save("Customer_List_" + getTodaysDateMMDDYYYY() + ".pdf");
+  }
 
   render() {
     let lgClose = () => this.setState({ lgShow: false });
@@ -190,9 +250,9 @@ class App extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <div id="divToPrint">
+          <div>
             <div>
-              <table className="table table-bordered table-customer">
+              <table className="table table-bordered table-customer" id="divToPrint">
                 <thead>
                   <tr>
                     <th>
