@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import $ from 'jquery';
 
 import './App.css';
 import Customer from './Customer';
@@ -163,9 +164,19 @@ class App extends Component {
     const that = this;
     const pdfsize = 'a4';
     const pdf = new jsPDF('l', 'pt', pdfsize);
-  
-    const res = pdf.autoTableHtmlToJson(document.getElementById("customerList"));
-  
+
+    var table = document.getElementById('customerList').cloneNode(true);
+
+    table.deleteRow(0);
+
+     for (var i=0; i< table.rows.length; i++) {
+        table.rows[i].deleteCell(2); //delete the cell
+        table.rows[i].deleteCell(2); //delete the cell
+        table.rows[i].deleteCell(5); //delete the cell
+     }
+    
+    const res = pdf.autoTableHtmlToJson(table);
+
     var totalPagesExp = pdf.internal.getNumberOfPages();
 
     var pageContent = function (data) {
@@ -223,10 +234,29 @@ class App extends Component {
         cellWidth: 'auto',
       },
       columnStyles: {
-        1: {
-          cellWidth: 'auto'
+        text: {
+          columnWidth: 'wrap'
+        },
+        columnName1: {
+            columnWidth: 45,
+            fontStyle: 'bold',
+            textColor: 240                
+        },
+        description: {
+            columnWidth: 107
+        },
+        columnName2: {
+            columnWidth: 45
+        },
+        columnName3: {
+            columnWidth: 45
+        },
+        columnName4: {
+            columnWidth: 45
         }
       },
+      bodyStyles: {valign: 'middle'},
+      theme: 'grid',
     });
   
     pdf.save("Customer_List_" + getTodaysDateMMDDYYYY() + ".pdf");
