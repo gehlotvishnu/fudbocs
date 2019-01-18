@@ -24,6 +24,7 @@ class App extends Component {
     this.setCustomers = this.setCustomers.bind(this);
     this.filterCustomer = this.filterCustomer.bind(this);
     this.print = this.print.bind(this);
+    this.printDocument = this.printDocument.bind(this);
   }
   
   componentDidMount() {
@@ -41,6 +42,22 @@ class App extends Component {
 
   setCustomers(customers) {
     this.setState({customers: customers, originalList: customers})
+  }
+
+  getTiffinType() {
+    if(document.getElementById('BreakFast_Search').checked && document.getElementById('Launch_Search').checked && document.getElementById('Dinner_Search')) {
+      return 'BreakFast, Launch and Dinner'; 
+    } else if(document.getElementById('Launch_Search').checked && document.getElementById('Dinner_Search').checked) {
+      return 'Launch And Dinner';
+    } else if(document.getElementById('Launch_Search').checked) {
+      return 'Launch';
+    } else if(document.getElementById('Dinner_Search').checked) {
+      return 'Dinner';
+    } else if(document.getElementById('BreakFast_Search').checked) {
+      return 'BreakFast';
+    }
+
+    return 'BreakFast, Launch and Dinner'
   }
 
   filterCustomer(isServer) {
@@ -143,10 +160,11 @@ class App extends Component {
   handleClose = () => this.setState({ isDialogOpen: false })
 
   printDocument() {
-    var pdfsize = 'a4';
-    var pdf = new jsPDF('l', 'pt', pdfsize);
+    const that = this;
+    const pdfsize = 'a4';
+    const pdf = new jsPDF('l', 'pt', pdfsize);
   
-    var res = pdf.autoTableHtmlToJson(document.getElementById("divToPrint"));
+    const res = pdf.autoTableHtmlToJson(document.getElementById("customerList"));
   
     var totalPagesExp = pdf.internal.getNumberOfPages();
 
@@ -156,7 +174,7 @@ class App extends Component {
         pdf.setTextColor(40);
         pdf.setFontStyle('normal');
    
-        pdf.text("Customer Tiffin List - " + getTodaysDateWithTime(), data.settings.margin.left, 50);
+        pdf.text("Customer Tiffin List for " + that.getTiffinType() + " at " + getTodaysDateWithTime(), data.settings.margin.left, 50);
 
         // FOOTER
         var str = "Page " + data.pageCount;
@@ -231,7 +249,7 @@ class App extends Component {
           &nbsp; Date: <input type='date' id='Date_Search' min="2018-11-30"/>
           &nbsp; <input type='button' id='Search' value='Search' onClick={() => this.filterCustomer(true)}/>
           &nbsp; <input type='button' id="Reset" value='Reset' onClick={() => this.resetCustomer()} />
-          &nbsp; <input type='button' id='Print' value='Print' onClick={() => this.print()} />
+          &nbsp; <input type='button' id='Print' value='Print' onClick={() => this.printDocument()} />
           
           <hr />
           <Customer setCustomers={this.setCustomers} customers={this.state.customers} openDialog={this.openDialog}/>

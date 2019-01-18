@@ -48,9 +48,10 @@ class Customer extends Component {
     const that = this;
     return [
         <div>
-               <table className="table table-bordered">
+               <table className="table table-bordered" id='customerList'>
                <thead>
                  <tr>
+                   <th>Sr. No.</th>
                    <th>Name</th>
                    {/* <th>Middle Name</th>
                    <th>Last Name</th> */}
@@ -65,6 +66,7 @@ class Customer extends Component {
      
                <tbody>
                   <tr>
+                    <td></td>
                    <td><input type='text' name='firstName' id='FirstName_0' required/></td>
                    {/* <td><input type='text' name='middleName' id='MiddleName_0' /></td>
                    <td><input type='text' name='lastName' id='LastName_0' /></td> */}
@@ -96,6 +98,8 @@ class Customer extends Component {
                 {
                   this.props.customers && this.props.customers.map(function(customer, index) {
                   return <tr>
+                          <td>{index + 1}</td>
+
                           <td>
                             <label type='text' name="firstName" id={`FirstName_${index}`}>{customer.FirstName}</label>
                           </td>
