@@ -31,6 +31,11 @@
   }
 }
 
+.customer-list {
+  height: 500px;
+  overflow-y: scroll;
+}
+
 /* Absolute Center Spinner */
 .loading {
   position: fixed;
@@ -256,3 +261,65 @@
 .table td {
   padding: 1px;
 }
+
+.css-79elbk {
+  position: initial !important;
+}
+
+.header {
+  background-color: #eff1f06e;
+}
+
+/* https://codepen.io/blaketarter/pen/JGivD */
+.btn {
+  display: inline-block;
+  border-radius: 2px;
+  border: none;
+  height: 45px;
+  padding: 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.cta {
+  background-color: #F07444;
+  color: white;
+  
+  transition: .2s ease;
+}
+.cta:hover {
+    background-color: darken(#F07444, 5%);
+    transition: .2s ease;
+}
+
+.sm {
+  width: 7%;
+}
+
+.secondary {
+  background-color: #f3f3f3;
+  color: #F07444;
+  
+  transition: .2s ease;
+}
+.secondary:hover {
+    background-color: darken(#f3f3f3, 10%);
+    transition: .2s ease;
+}
+
+@media (max-width: 480px){
+  .sm {
+    width: 40%
+  }
+  
+  .md {
+    width: 50%
+  }
+  
+  .lg {
+    width: 90%;
+  }
+}
+
+h3 { color: #F07444; font-family: 'Open Sans Condensed'; font-size: 24px; font-weight: normal; line-height: 32px; margin: 0 0 18px; }
+

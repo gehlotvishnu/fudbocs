@@ -47,7 +47,7 @@ class Customer extends Component {
   render() {
     const that = this;
     return [
-        <div>
+        <div className='customer-list'>
                <table className="table table-bordered" id='customerList'>
                <thead>
                  <tr>
@@ -56,7 +56,7 @@ class Customer extends Component {
                    {/* <th>Middle Name</th>
                    <th>Last Name</th> */}
                    <th>Email</th>
-                   <th>Sex</th>
+                   <th>Gender</th>
                    <th>Mobile</th>
                    <th>Address</th>
                    <th>Remark</th>
@@ -82,7 +82,7 @@ class Customer extends Component {
                     </select>
                    </td>
                    <td><input type='text' name='mobile' id='Mobile_0' required/></td>
-                   <td><input type='text' name='cityName' id='CityName_0' required/></td>
+                   <td><input type='text' size='40' name='cityName' id='CityName_0' required/></td>
                    <td><input type='text' name='remark' id='Remark_0' required/></td>
                    {/* <td>
                       <select id='TiffinType_0'>
