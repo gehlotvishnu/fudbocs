@@ -39,19 +39,52 @@ module.exports = {
     },
     saveSchedule(scheduler, date) {
         return new Promise(function (resolve, reject) {
-            scheduler.save()
-            .then(schedule => {
-                console.log(schedule);
-                if(schedule && schedule.TiffinSchedule[0][date.getFullYear()]) {
-                    resolve({_id: schedule._id, monthSchedule: schedule.TiffinSchedule[0][date.getFullYear()][date.getMonth() + 1]});
+            // let query = {CustomerId: ObjectId(scheduler.CustomerId), $and:[{'TiffinSchedule.0.' + date.getFullYear() +'.' + (date.getMonth() + 1).toString() : { $exists : true }}]};
+            let key = 'TiffinSchedule.0.'+ date.getFullYear()
+            let query =  {CustomerId: ObjectID(scheduler.CustomerId), $and:[{[key] : { '$exists' : true }}]};
+            // ['TiffinSchedule.0.'+ date.getFullYear() +'.' + (date.getMonth() + 1).toString()]
+            //{CustomerId: ObjectId("5c2f2af134f7431f44de7724"), $and:[{'TiffinSchedule.0.2019.1': { '$exists' : true }}]}
+            //{CustomerId: ObjectId("5c2f2af134f7431f44de7724"), $and:[{'TiffinSchedule.0.2019.2'}]: { "$exists" : true }}]}
+            Schedule.find(query, function(err, schedule) {
+                if (err) throw err;
+
+                if(schedule.length > 0 && schedule[0].TiffinSchedule) {
+                    if(schedule[0].TiffinSchedule[0][date.getFullYear()][date.getMonth() + 1]) {
+                        // UPDATE existing schedule
+                    } else {
+                        schedule[0].TiffinSchedule[0][date.getFullYear()].push(scheduler.TiffinSchedule[0][date.getFullYear()][0]);
+                        schedule[0].markModified('TiffinSchedule');
+
+                        schedule[0].save()
+                        .then(schedule => {
+                            console.log(schedule);
+                            if(schedule && schedule.TiffinSchedule[0][date.getFullYear()]) {
+                                resolve({_id: schedule._id, monthSchedule: schedule.TiffinSchedule[0][date.getFullYear()][date.getMonth() + 1]});
+                            } else {
+                                resolve({});
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            reject(err);
+                        });
+                    }
                 } else {
-                    resolve({});
+                    scheduler.save()
+                    .then(schedule => {
+                        console.log(schedule);
+                        if(schedule && schedule.TiffinSchedule[0][date.getFullYear()]) {
+                            resolve({_id: schedule._id, monthSchedule: schedule.TiffinSchedule[0][date.getFullYear()][date.getMonth() + 1]});
+                        } else {
+                            resolve({});
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        reject(err);
+                    });
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                reject(err);
-            })
+            });
         });
     },
     saveCustomer(customer) {
@@ -74,7 +107,7 @@ module.exports = {
                 if (err) throw err;
             
                 // object of all the customera
-                console.log(customera);
+                // console.log(customera);
                 resolve(customera);
             });
         });
@@ -88,7 +121,7 @@ module.exports = {
                 const date1 = date ? new Date(date) : new Date();
                 
                 // object of all the customera
-                console.log(schedule);
+                // console.log(schedule);
                 if(schedule.length > 0 && schedule[0].TiffinSchedule[0][date1.getFullYear()]) {
                     resolve({_id: schedule[0]._id, monthSchedule: schedule[0].TiffinSchedule[0][date1.getFullYear()][date1.getMonth() + 1]});
                 } else {

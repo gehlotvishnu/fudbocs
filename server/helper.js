@@ -1,6 +1,6 @@
-// Returns an array of dates between the two dates
-const getDates = function(startDate, endDate, tiffin, isWeekend) {
-    var dates = [],
+// Returns an array of days between the two dates
+const getDays = function(startDate, endDate, isWeekend) {
+    var days = [],
         currentDate = startDate,
         addDays = function(days) {
           var date = new Date(this.valueOf());
@@ -11,17 +11,16 @@ const getDates = function(startDate, endDate, tiffin, isWeekend) {
 
         if(!isWeekend) {
             if(!is_weekend(currentDate)) {
-                dates.push({date: (currentDate.getFullYear() + "-" +(currentDate.getMonth() + 1) + "-" + currentDate.getDate()), tiffin});
+                days.push(currentDate.getDate());
             }
         } else{
-            dates.push({date: (currentDate.getFullYear() + "-" +(currentDate.getMonth() + 1) + "-" + currentDate.getDate()), tiffin});
+            days.push(currentDate.getDate());
         }
 
       currentDate = addDays.call(currentDate, 1);
     }
 
-
-    return {[startDate.getMonth() + 1] : dates};
+    return days;
   };
 
 const is_weekend =  function(date1){
@@ -34,6 +33,6 @@ const is_weekend =  function(date1){
 }
 
 module.exports = {
-    getDates: getDates,
+    getDays: getDays,
     is_weekend: is_weekend
 }

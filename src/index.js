@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import Bill from './Bill';
 import Print from './Print';
+import Home from './User/Home'
 
 import * as serviceWorker from './serviceWorker';
 
@@ -13,6 +14,7 @@ ReactDOM.render((
        <main>
         <Switch>
             <Route exact path='/' component={App}/>
+            <Route path='/user/:customerId' component={Home}/>
             <Route path='/reciept' component={Bill}/>
             <Route path='/print-customer' component={Print}/>
         </Switch>

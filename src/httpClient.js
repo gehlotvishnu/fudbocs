@@ -3,39 +3,35 @@ import { parseXml, xmlToJson } from './parseXML';
 
 export const saveSchedule = function (shedule) {
     return new Promise(function (resolve, reject) {
-        axios('api/saveSchedule', {
+        axios('/api/schedule/add', {
             method: 'POST',
             data: shedule
         }).then(res => {
             resolve(res.data);
-        })
-            .catch(err => {
-                console.log(err);
-                reject(err);
-            });
+        }).catch(err => {
+            console.log(err);
+            reject(err);
+        });
     });
 }
 
 export const updateSchedule = function (shedule) {
     return new Promise(function (resolve, reject) {
-        axios('api/updateSchedule', {
+        axios('/api/schedule/update', {
             method: 'POST',
             data: shedule
         }).then(res => {
             resolve(res.data);
-        })
-            .catch(err => {
-                console.log(err);
-                reject(err);
-            });
+        }).catch(err => {
+            console.log(err);
+            reject(err);
+        });
     });
 }
 
-
-
 export const saveCustomer = function (customer) {
     return new Promise(function (resolve, reject) {
-        axios('api/saveCustomer', {
+        axios('/api/customer/add', {
             method: 'POST',
             data: customer
         }).then(res => {
@@ -50,7 +46,7 @@ export const saveCustomer = function (customer) {
 
 export const getCustomers = function (query) {
     return new Promise(function (resolve, reject) {
-        axios('api/getCustomers', {
+        axios('/api/customer/all', {
             method: 'GET',
         }).then(res => {
             resolve(res.data);
@@ -64,7 +60,7 @@ export const getCustomers = function (query) {
 
 export const getSchedule = function (query) {
     return new Promise(function (resolve, reject) {
-        axios('api/getSchedule?customerId=' + query.customerId + '&date' + query.date, {
+        axios('/api/schedule/getBy?customerId=' + query.customerId + '&date=' + query.date, {
             method: 'GET',
         }).then(res => {
             resolve(res.data);
@@ -78,7 +74,7 @@ export const getSchedule = function (query) {
 
 export const filterCustomer = function (date, tiffinType) {
     return new Promise(function (resolve, reject) {
-        axios('api/filterCustomer?date=' + date + '&tiffinType=' + tiffinType, {
+        axios('/api/filterCustomer?date=' + date + '&tiffinType=' + tiffinType, {
             method: 'GET',
         }).then(res => {
             resolve(res.data);

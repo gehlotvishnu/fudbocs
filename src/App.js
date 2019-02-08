@@ -159,7 +159,7 @@ class App extends Component {
     }
   }
 
-  openDialog = (id, customerName) => this.setState({ isDialogOpen: true, customerId: id, customerName: customerName })
+  openDialog = (id, customerName, primaryKey) => this.setState({ isDialogOpen: true, customerId: id, customerName: customerName, primaryKey: primaryKey })
  
   handleClose = () => this.setState({ isDialogOpen: false })
 
@@ -298,7 +298,7 @@ class App extends Component {
 
           {
               this.state.isDialogOpen &&
-              <DialogBox handleClose={this.handleClose} customerId={this.state.customerId} customerName={this.state.customerName}/>
+              <DialogBox handleClose={this.handleClose} primaryKey={this.state.primaryKey} customerId={this.state.customerId} customerName={this.state.customerName}/>
           }
         </div>
     ]

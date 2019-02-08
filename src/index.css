@@ -66,7 +66,7 @@ h1 {
   width: 900px;
 }
 
-.ui-dialog {
+/* .ui-dialog {
   position: fixed;
   top: 30%;
   left: 44%;
@@ -79,16 +79,16 @@ h1 {
 height: 450px !important;
 width: 500px;
 transform: translate(-250px, -150px);
-}
+} */
 
-.ui-dialog .ui-dialog-buttonpane {
+/* .ui-dialog .ui-dialog-buttonpane {
   position: absolute;
   width: 100%;
   bottom: 0;
   text-align: right;
   border-width: 1px 0 0;
   border-top: 1px solid #f6f6f6;
-}
+} */
 
 .fc button, .fc-button-group, .fc-time-grid .fc-event .fc-time span {
   display: block !important;
@@ -133,6 +133,7 @@ body {font-family: Verdana, sans-serif;}
 
 /* Weekdays (Mon-Sun) */
 .weekdays {
+  width:100%;
   margin: 0;
   padding: 10px 0;
   background-color:#ddd;
@@ -156,9 +157,11 @@ body {font-family: Verdana, sans-serif;}
   width: 13.6%;
   text-align: center;
   margin-bottom: 5px;
-  font-size:12px;
+  font-size:15px;
   color: #777;
   padding:10px;
+  border: 2px solid #f9f8ff;
+  cursor: pointer;
 }
 
 /* Highlight the "current" day */
@@ -186,4 +189,9 @@ body {font-family: Verdana, sans-serif;}
 .title {
   font-size: 17px;
   border-bottom: 2mm ridge rgb(170, 50, 220, .6);
+}
+
+.page-center {
+  max-width: 500px;
+  margin: 0 auto;
 }

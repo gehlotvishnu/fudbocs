@@ -1,76 +1,125 @@
 
 
 	import React, { Component } from 'react';
-	import { FormControl, Grid, Row, Col, Checkbox  } from 'react-bootstrap';
+	import { FormControl, Row, Col, FormCheck, Alert } from 'react-bootstrap';
 
 	export default class TiffinDropDown extends Component {
 	constructor(props) {
 			super(props);
 
 			this.state = {
-			isDialogOpen: false
+			isDialogOpen: false,
+			show: false
 		}
+
+		this.check = this.check.bind(this);
+		this.handleCheckboxClick = this.handleCheckboxClick.bind(this);
 	}
 
-	handleCheckboxClick(code, id) {
+	setValues(checkBoxId, amountId, qtyId, schedule, amount, role) {
+		if(document.getElementById(checkBoxId).checked) {
+			const amt = schedule ? schedule.amount : amount;
+			const qty = schedule ? schedule.qty : '1';
+			if(role === 'user') {
+			   document.getElementById(amountId).innerHTML = `Rs. ${amt}`
+			   document.getElementById(qtyId).innerHTML = `Qty. ${qty}`
+			} else {
+			   document.getElementById(amountId).value = amt;
+			   document.getElementById(qtyId).value = qty;
+		   }
+		}  else {
+		   if(role === 'user') {
+			   document.getElementById(amountId).innerHTML = '';
+			   document.getElementById(qtyId).innerHTML = '';
 
+		   } else {
+			   document.getElementById(amountId).value = '';
+			   document.getElementById(qtyId).value = '';
+		   }
+	   }
+	}
+
+	handleCheckboxClick(code, id, role,) {
 		if(code === 4){
-			 if(document.getElementById('BreakFast_' + id).checked) {
-				document.getElementById('Amount_BreakFast_' + id).value = '20';
-				document.getElementById('Quantity_BreakFast_' + id).value = '1';
-			 }  else {
-				document.getElementById('Amount_BreakFast_' + id).value = '';
-				document.getElementById('Quantity_BreakFast_' + id).value = '';
-			}
+			this.setValues('BreakFast_' + id, 'Amount_BreakFast_' + id, 'Quantity_BreakFast_' + id, this.props.tiffin.breakFast, '20', role);
 		}
 
 		if(code === 1) {
-			if(document.getElementById('Launch_' + id).checked) {
-				document.getElementById('Amount_Launch_' + id).value = '40';
-				document.getElementById('Quantity_Launch_' + id).value = '1';
-			} else {
-				document.getElementById('Amount_Launch_' + id).value = '';
-				document.getElementById('Quantity_Launch_' + id).value = '';
-			}
+			this.setValues('Launch_' + id, 'Amount_Launch_' + id, 'Quantity_Launch_' + id, this.props.tiffin.launch, '45', role);
 		}
 
-		if(code === 2)
-		  if(document.getElementById('Dinner_' + id).checked) {
-				document.getElementById('Amount_Dinner_' + id).value = '40';
-				document.getElementById('Quantity_Dinner_' + id).value = '1';
-			}else {
-				document.getElementById('Amount_Dinner_' + id).value = '';
-				document.getElementById('Quantity_Dinner_' + id).value = '';
-			}
+		if(code === 2) {
+			this.setValues('Dinner_' + id, 'Amount_Dinner_' + id, 'Quantity_Dinner_' + id, this.props.tiffin.dinner, '45', role);
+		}
 	}
 
-  render() {
-    return <div>
-				<Grid>
-					<Row className="show-grid">
-						<Col md={4} mdPush={4}>
-							<Checkbox  type='checkbox' name='breakFast' id={'BreakFast_' + this.props.id} value='Break Fast' defaultChecked={this.props.tiffin.breakFast ? 'checked' : ''} onClick={() => this.handleCheckboxClick(4, this.props.id)}>Break Fast</Checkbox>							
-							<FormControl type='text' name='amount' id={'Amount_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.amount : ''} size='5'/> 
-							<FormControl type='text' name='quantity' id={'Quantity_BreakFast_' + this.props.id} defaultValue={this.props.tiffin.breakFast ? this.props.tiffin.breakFast.qty : '1'} size='5'/> 
-						</Col>
-						<Col md={4} mdPull={4}>
-							<Checkbox  type='checkbox' name='launch' id={'Launch_' + this.props.id} value='Launch' defaultChecked={this.props.tiffin.launch ? 'checked' : ''} onClick={() => this.handleCheckboxClick(1, this.props.id)}>Launch</Checkbox>
-							<FormControl type='text' name='amount' id={'Amount_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.amount : ''} size='5'/> 
-							<FormControl type='text' name='quantity' id={'Quantity_Launch_' + this.props.id} defaultValue={this.props.tiffin.launch ? this.props.tiffin.launch.qty : '1'} size='5'/> 
-						</Col>
+	check(role, date, time) {
+		const result = this.props.check(role, date, time);
+		if(!result) {
+			this.setState({show: true});
+		} else {
+			this.setState({show: false});
+		}
 
-						<Col md={4} mdPull={4}>
-							<Checkbox  type='checkbox' name='dinner' id={'Dinner_' + this.props.id} value='Dinner' defaultChecked={this.props.tiffin.dinner ? 'checked' : ''} onClick={() => this.handleCheckboxClick(2, this.props.id)}>Dinner</Checkbox>
-							<FormControl type='text' name='amount' id={'Amount_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.amount : ''} size='5'/> 
-							<FormControl type='text' name='quantity' id={'Quantity_Dinner_' + this.props.id} defaultValue={this.props.tiffin.dinner ? this.props.tiffin.dinner.qty : '1'} size='5'/> 
-						</Col>
-					</Row>
-				</Grid>
+		return result;
+	}
+
+	handleTimeout(e) {
+		e.preventDefault();
+
+		this.setState({show: true, msg: 'Please call admin(9351275165), if you want to modify schedule for current datetime.'})
+	}
+
+render() {
+	const handleHide = () => this.setState({ show: false });
+	const that = this;
+	const { role, date, id, tiffin } = this.props;	
+	
+	const getBreakFast = function(name, value, checkBoxId, amountId, qtyId, schedule, time, tiffinType) {
+		if(role === 'user') {
+			return <div>
+				<FormCheck  type='checkbox' name={name} id={checkBoxId} value={value} defaultChecked={schedule ? 'checked' : ''} onClick={(e) => that.check(role, date, time) ? that.handleCheckboxClick(tiffinType, id, role) : that.handleTimeout(e)} label={value} />							
+				{schedule ? <label id={amountId}>Rs. {schedule.amount}</label> : <label id={amountId}></label>}<br />
+				{schedule ? <label id={qtyId}>Qty. {schedule.qty}</label> : <label id={qtyId}></label>}
+			</div>
+		} else {
+			return <div>
+				<FormCheck  type='checkbox' name={name} id={checkBoxId} value={value} defaultChecked={schedule ? 'checked' : ''} onClick={(e) => that.check(role, date, time) ? that.handleCheckboxClick(tiffinType, id, role) : that.handleTimeout(e)} label={value} />						
+				<FormControl type='text' name='amount' id={amountId} defaultValue={schedule ? schedule.amount : ''} size='5'/> 
+				<FormControl type='text' name='quantity' id={qtyId} defaultValue={schedule ? schedule.qty : ''} size='5'/> 
+			</div>
+		}
+	}
+
+    return <div>
+				{
+					this.state.show && <Alert show={this.state.show} dismissable="true" variant="danger">
+					<p className="d-flex">
+					 {this.state.msg}
+					 <div className="justify-content-end">
+					 	<button onClick={handleHide} className="close"><span aria-hidden="true">×</span></button>
+					</div>
+					</p>
+					
+				  </Alert>
+				}
+				<Row className="show-grid">
+					<Col md={4} mdPush={4}>
+						{getBreakFast('breakFast', 'Break Fast', 'BreakFast_' + id, 'Amount_BreakFast_' + id, 'Quantity_BreakFast_' + id, tiffin.breakFast, '07:00 am', 4)} 
+					</Col>
+					<Col md={4} mdull={4}>
+						{getBreakFast('launch', 'Launch', 'Launch_' + id, 'Amount_Launch_' + id, 'Quantity_Launch_' + id, tiffin.launch, '10:00 am', 1)} 
+					</Col>
+
+					<Col md={4} mdull={4}>
+						{getBreakFast('dinner', 'Dinner', 'Dinner_' + id, 'Amount_Dinner_' + id, 'Quantity_Dinner_' + id, tiffin.dinner, '17:00 pm', 2)} 
+					</Col>
+				</Row>
 			</div>
   }
 }
 
-	// <select id={'TiffinType_' + this.props.id} >
+	// <select id={'TiffinType_' + id} >
 							// 	<option value="0">--Select--</option>
 							// 	<option class="launch" value="1">Launch</option>
 							// 	<option class="dinner" value="2">Dinner</option>

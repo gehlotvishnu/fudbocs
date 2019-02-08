@@ -101,7 +101,7 @@ class Customer extends Component {
                           <td>{index + 1}</td>
 
                           <td>
-                            <label type='text' name="firstName" id={`FirstName_${index}`}>{customer.FirstName}</label>
+                            <label type='text' name="firstName" id={`FirstName_${index}`}>{customer.name}</label>
                           </td>
                           {/* <td>
                             <label type='text' name="middleName" id={`MiddleName_${index}`}>{customer.MiddleName}</label>
@@ -110,22 +110,23 @@ class Customer extends Component {
                             <label type='text' name="lastsName" id={`LastName_${index}`}>{customer.LastName}</label>
                           </td> */}
                           <td>
-                            <label type='text' name="email" id={`Email_${index}`}>{customer.Email}</label>
+                            <label type='text' name="email" id={`Email_${index}`}>{customer.email}</label>
                           </td>
                           <td>
-                            <label type='text' name="sex" id={`Sex_${index}`}>{customer.Sex}</label>
+                            <label type='text' name="sex" id={`Sex_${index}`}>{customer.gender}</label>
                           </td>
                           <td>
-                            <label type='text' name="mobile" id={`Mobile_${index}`}>{customer.Mobile}</label>
+                            <label type='text' name="mobile" id={`Mobile_${index}`}>{customer.mobileNo}</label>
                           </td>
                           <td>
-                            <label type='text' name="cityName" id={`CityName_${index}`}>{customer.CityName}</label>
+                            <label type='text' name="cityName" id={`CityName_${index}`}>{customer.address}</label>
                           </td>
                           <td>
-                            <label type='text' name="remark" id={`Remark_${index}`}>{customer.Remark}</label>
+                            <label type='text' name="remark" id={`Remark_${index}`}>{customer.remark}</label>
                           </td>
                           <td>
-                              <input type='button' name='schedule' id={`Schedule_${index}`} value='Schedule' onClick={() => that.props.openDialog(customer._id, customer.FirstName)}/>
+                              <input type='button' name='schedule' id={`Schedule_${index}`} value='Schedule' onClick={() => that.props.openDialog(customer.id, customer.name, customer.id)}/>
+                              &nbsp;<a href={`/user/${customer._id}`} target='_blank'>Get Link</a>
                           </td>
                         </tr>;
                   })
