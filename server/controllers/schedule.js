@@ -17,7 +17,7 @@ const add = function(req, res, next){
 
     try {
         newSchedule.add().then(function() {
-            new Schedule({}).all().then(function(scheduleList) {
+            new Schedule({}).getBy(params.customerId, params.date).then(function(scheduleList) {
                 res.send(scheduleList);
             });
 		});
@@ -47,12 +47,15 @@ const getBy = function(req, res, next){
 const update = function(req, res, next) {
     try {
         let params = {
-            createdBy: 'Admin',
+            createdBy: req.body.role || 'user',
             customerId: req.body.customerId,
-            date:new Date(req.body.date),
+            date:req.body.date ? new Date(req.body.date) : new Date(),
             id: req.body._id,
             tiffin: req.body.bill,
-            role: req.body.role
+            role: req.body.role,
+            isNew: req.body.isNew,
+            isActive: req.body.isActive,
+            dateTimeModified: new Date()
         };
     
         const newSchedule= new Schedule(params);
@@ -62,13 +65,10 @@ const update = function(req, res, next) {
                 new Schedule({}).getBy(params.customerId, params.date).then(function(schedules) {
                     res.send(schedules);
                 });
-            } else if(params.role === 'user') {
+            } else {
                 new Schedule({}).getByCustomerId(params.customerId, params.date || new Date()).then(function(schedules) {
                     res.send(schedules);
                 });
-            } else {
-                res.send([]);
-
             }
         });
     } catch (err) {

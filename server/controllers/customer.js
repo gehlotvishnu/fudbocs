@@ -46,4 +46,24 @@ const all = function(req, res, next){
  }
 }
 
-module.exports = {add: add, all: all};
+const filter = function(req, res, next){
+	try {
+		params = {
+			date: req.query.date ? new Date(req.query.date) : new Date(),
+			tiffinType: req.query.tiffinType ? req.query.tiffinType.split(',') : [1, 2, 3, 4]
+		}
+		// if(req.decoded.role === 'admin') {
+			new Customer({}).filter(params).then(function(customerList) {
+				res.send(customerList);
+			});
+		// } else {
+			// new Customer({}).allByUserId(req.decoded.id).then(function(customerList) {
+			// 	res.send(customerList);
+			// });
+		// }
+ } catch (err) {
+	 console.log("Error: ", err);
+ }
+}
+
+module.exports = {add: add, all: all, filter: filter};

@@ -1,12 +1,14 @@
 const connection = require("../lib/connection.js");
 let Schedule = function(params){
-    this.createdBy = 'Admin',
+    this.createdBy = params.createdBy,
     this.customerId = params.customerId,
     this.date = params.date,
     this.tiffinList = params.tiffin,
     this.daySchedule = params.daySchedule,
     this.id = params.id,
-	this.isActive = params.isActive
+    this.isActive = params.isActive,
+    this.isNew = params.isNew,
+    this.dateTimeModified = params.dateTimeModified
 };
 
 Schedule.prototype.add = function(){
@@ -111,14 +113,37 @@ Schedule.prototype.update = function(data) {
             }
 
             that.tiffinList.map((tiffin) => { 
-                let values = [tiffin.qty, tiffin.amount, tiffin.isActive || 0, that.date.getDate(), that.id, tiffin.tiffinType];
+                let values1 = [that.id, that.date.getDate(), tiffin.tiffinType];
 
-                connection.query('UPDATE tiffin_schedule set qty = ?, amount = ?, isActive = ? where day = ? and scheduleId = ? and tiffinType = ?', values, function(error,rows,fields){
-                    if(!error){ 
-                        resolve(rows);
+                connection.query("SELECT 1 FROM tiffin_schedule WHERE scheduleId = ? and day = ? and tiffinType = ? LIMIT 1", values1, function (error, results, fields) {
+                    if (error) {
+                        console.log(error);
+                    }
+                    
+                    if (results.length === 0) {
+                        let values = [
+                            [that.id, that.date.getDate(), tiffin.tiffinType, tiffin.qty, tiffin.amount, that.isActive, that.createdBy]
+                        ]
+
+                        connection.query("INSERT INTO tiffin_schedule(scheduleId,day,tiffinType,qty,amount,isActive,createdBy) VALUES ?", [values], function(error,rows,fields){
+                            if(!error){ 
+                                resolve(rows);
+                            } else {
+                                console.log("Error...", error);
+                                reject(error);
+                            }
+                        });
                     } else {
-                        console.log("Error...", error);
-                        reject(error);
+                        let values = [tiffin.qty, tiffin.amount, tiffin.isActive, that.dateTimeModified, that.createdBy, that.date.getDate(), that.id, tiffin.tiffinType];
+                        
+                        connection.query('UPDATE tiffin_schedule set qty = ?, amount = ?, isActive = ?, dateTimeModified = ?, updatedBy = ? where day = ? and scheduleId = ? and tiffinType = ?', values, function(error,rows,fields){
+                            if(!error){ 
+                                resolve(rows);
+                            } else {
+                                console.log("Error...", error);
+                                reject(error);
+                            }
+                        });
                     }
                 });
             });
