@@ -4,18 +4,21 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const Customer = require('./controllers/customer.js');
+const customerRouter = require('./routes/customer');
+
 const Schedule = require('./controllers/schedule');
+const Auth = require('./controllers/auth');
 
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/api/customer/all', Customer.all);
-app.get('/api/customer/filter', Customer.filter);
-app.get('/api/schedule/getBy', Schedule.getBy);
+app.post("/api/auth/login", Auth.login);
 
-app.post('/api/customer/add', Customer.add);
+app.use('/api/customer', customerRouter);
+
+app.get('/api/schedule/getBy', Schedule.getBy);
 app.post('/api/schedule/add', Schedule.add);
 app.post('/api/schedule/update', Schedule.update);
 
