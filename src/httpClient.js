@@ -1,4 +1,24 @@
 import axios from 'axios';
+import { authHeader } from './Server/auth-header';
+
+let url = window.location.href
+let arr = url.split("/");
+let host = arr[0] + "//" + arr[2] + '/'
+
+export const post = function(uri, data) {
+	return new Promise(function (resolve, reject) {
+			axios(host + uri, {
+					method: 'POST',
+					data: data,
+					headers: authHeader()
+			}).then(res => {
+					resolve(res.data);
+			}).catch(err => {
+							console.log(err);
+							reject(err);
+					});
+	});
+}
 
 export const saveSchedule = function (shedule) {
     return new Promise(function (resolve, reject) {
@@ -32,7 +52,8 @@ export const saveCustomer = function (customer) {
     return new Promise(function (resolve, reject) {
         axios('/api/customer/add', {
             method: 'POST',
-            data: customer
+            data: customer,
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         })
@@ -47,6 +68,7 @@ export const getCustomers = function (query) {
     return new Promise(function (resolve, reject) {
         axios('/api/customer/all', {
             method: 'GET',
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         })
@@ -75,6 +97,7 @@ export const filterCustomer = function (date, tiffinType) {
     return new Promise(function (resolve, reject) {
         axios('/api/customer/filter?date=' + date + '&tiffinType=' + tiffinType, {
             method: 'GET',
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         })

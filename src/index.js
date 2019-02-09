@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import { PrivateRoute } from "./PrivateRoute"
 import './index.css';
 import App from './App';
 import Bill from './Bill';
 import Print from './Print';
 import Home from './User/Home'
+import Login from './Login/index'
 
 import * as serviceWorker from './serviceWorker';
 
@@ -13,7 +16,9 @@ ReactDOM.render((
     <BrowserRouter>
        <main>
         <Switch>
-            <Route exact path='/' component={App}/>
+            {/* <Route exact path='/' component={App}/> */}
+            <PrivateRoute exact path="/" component={App} />
+            <Route path="/login" component={Login} />
             <Route path='/user/:customerId' component={Home}/>
             <Route path='/reciept' component={Bill}/>
             <Route path='/print-customer' component={Print}/>

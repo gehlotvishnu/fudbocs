@@ -10,6 +10,7 @@ import Print from './Print';
 import DialogBox from './Dialog'
 import { filterCustomer } from './httpClient';
 import { getTodaysDateWithTime, getTodaysDateMMDDYYYY } from './Helper';
+import { logout } from './Server/user';
 
 class App extends Component {
   constructor(props) {
@@ -280,7 +281,10 @@ class App extends Component {
           </LoadingOverlay>
          
          <div className='header'>
-          <h3>Tiffin Management System</h3>
+          <div className='flex'>
+            <div className='width90'><h3>Tiffin Management System</h3></div>
+            <span><a href='#' onClick={logout}>LOGOUT</a></span>
+          </div>
 
           <strong>Filter: </strong>
           Name: <input type='text' id='FirstName_Search' onChange={() => this.filterCustomer(true)} />
