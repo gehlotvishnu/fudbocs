@@ -6,6 +6,7 @@
 
 	import TiffinDropDown from '../Common/tiffinDropDown';
 	import { updateSchedule } from '../httpClient';
+	import { convertDate } from '../Helper';
 
 	export default class Schedule extends Component {
 	constructor(props) {
@@ -24,7 +25,7 @@
 
 			bill.push({tiffinType: '4', amount: amt, qty: qty, isActive: 1})
 		} else {
-			bill.push({tiffinType: '4', amount: 0, qty: 0})
+			this.props.tiffin.breakFast && bill.push({tiffinType: '4', amount: 0, qty: 0, isActive: 0})
 		}
 
 		if(document.getElementById('Launch_Update').checked) {
@@ -32,7 +33,7 @@
 			const qty = this.props.role === 'admin' ? document.getElementById('Quantity_Launch_Update').value : this.props.launch ? this.props.launch.qty : '1';
 			bill.push({tiffinType: '1', amount: amt, qty: qty, isActive: 1})
 		} else {
-			bill.push({tiffinType: '1', amount: 0, qty: 0})
+			this.props.tiffin.launch && bill.push({tiffinType: '1', amount: 0, qty: 0, isActive: 0})
 		}
 
 		if(document.getElementById('Dinner_Update').checked) {
@@ -40,7 +41,7 @@
 			const qty = this.props.role === 'admin' ?  document.getElementById('Quantity_Dinner_Update').value : this.props.dinner ? this.props.dinner.qty : '1';
 			bill.push({tiffinType: '2', amount: amt, qty: qty, isActive: 1})
 		} else {
-			bill.push({tiffinType: '2', amount: 0, qty: 0})
+			this.props.tiffin.dinner && bill.push({tiffinType: '2', amount: 0, qty: 0, isActive: 0})
 		}
 
 		const obj = {
@@ -49,7 +50,8 @@
 			index: props.index,
 			date: props.date,
 			bill: bill,
-			role: props.role
+			role: props.role,
+			isActive: 1
 			// tiffinType: document.getElementById('TiffinType_Update').value,
 		}
 
@@ -87,7 +89,7 @@
 				>
 				 <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-lg">
-              Schedule Tiffin - {date}
+              Schedule Tiffin - {convertDate(date)}
             </Modal.Title>
           </Modal.Header>
 				<Modal.Body>

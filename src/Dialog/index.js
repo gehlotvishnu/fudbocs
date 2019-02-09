@@ -37,21 +37,15 @@ class DialogBox extends Component {
 
       if(document.getElementById('BreakFast_Schedule').checked) {
         bill.push({tiffinType: '4', amount: document.getElementById('Amount_BreakFast_Schedule').value, qty: document.getElementById('Quantity_BreakFast_Schedule').value})
-      } else {
-          bill.push({tiffinType: '4', amount: 0, qty: 0, isActive: 0})
       }
 
       if(document.getElementById('Launch_Schedule').checked) {
         bill.push({tiffinType: '1', amount: document.getElementById('Amount_Launch_Schedule').value, qty: document.getElementById('Quantity_Launch_Schedule').value})
-      } else {
-        bill.push({tiffinType: '1', amount: 0, qty: 0, isActive: 0})
-    }
+      }
 
       if(document.getElementById('Dinner_Schedule').checked) {
         bill.push({tiffinType: '2', amount: document.getElementById('Amount_Dinner_Schedule').value, qty: document.getElementById('Quantity_Dinner_Schedule').value})
-      } else {
-        bill.push({tiffinType: '2', amount: 0, qty: 0, isActive: 0})
-    }
+      }
 
       const obj = {
         startDate: document.getElementById('StartDate').value,
@@ -59,7 +53,8 @@ class DialogBox extends Component {
         customerId: this.props.primaryKey,
         // tiffinType: document.getElementById('TiffinType_Schedule').value,
         isWeekend: document.getElementById('Yes').checked,
-        bill: bill
+        bill: bill,
+        isActive: 1
     }
 
     saveSchedule(obj).then(function(schedule) {
@@ -117,7 +112,7 @@ class DialogBox extends Component {
   _getSchedule(date) {
     const that = this;
 
-    getSchedule({customerId: this.props.primaryKey, date: date}).then(function(schedule) {
+    getSchedule({customerId: this.props.primaryKey, date: date, role: 'admin'}).then(function(schedule) {
         if(schedule.length > 0) {
             that.setState({schedule, showSchedulerInput: false});
         } else {
@@ -150,6 +145,8 @@ class DialogBox extends Component {
         colorCode = {colorCode: 'launch', index: day};
     } else if(tiffinType.indexOf('2') > -1) {
         colorCode = {colorCode: 'dinner', index: day};
+    } else if(tiffinType === '') {
+        colorCode = {colorCode: '', index: day}
     }
 
     return colorCode;

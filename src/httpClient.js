@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { parseXml, xmlToJson } from './parseXML';
 
 export const saveSchedule = function (shedule) {
     return new Promise(function (resolve, reject) {
@@ -60,7 +59,7 @@ export const getCustomers = function (query) {
 
 export const getSchedule = function (query) {
     return new Promise(function (resolve, reject) {
-        axios('/api/schedule/getBy?customerId=' + query.customerId + '&date=' + query.date, {
+        axios('/api/schedule/getBy?customerId=' + query.customerId + '&date=' + query.date + '&role=' + query.role, {
             method: 'GET',
         }).then(res => {
             resolve(res.data);
@@ -74,7 +73,7 @@ export const getSchedule = function (query) {
 
 export const filterCustomer = function (date, tiffinType) {
     return new Promise(function (resolve, reject) {
-        axios('/api/filterCustomer?date=' + date + '&tiffinType=' + tiffinType, {
+        axios('/api/customer/filter?date=' + date + '&tiffinType=' + tiffinType, {
             method: 'GET',
         }).then(res => {
             resolve(res.data);

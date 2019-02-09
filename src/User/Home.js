@@ -36,21 +36,15 @@ class Home extends Component {
 
       if(document.getElementById('BreakFast_Schedule').checked) {
         bill.push({tiffinType: '4', amount: document.getElementById('Amount_BreakFast_Schedule').value, qty: document.getElementById('Quantity_BreakFast_Schedule').value})
-      } else {
-          bill.push({tiffinType: '4', amount: 0, qty: 0, isActive: 0})
       }
 
       if(document.getElementById('Launch_Schedule').checked) {
         bill.push({tiffinType: '1', amount: document.getElementById('Amount_Launch_Schedule').value, qty: document.getElementById('Quantity_Launch_Schedule').value})
-      } else {
-        bill.push({tiffinType: '1', amount: 0, qty: 0, isActive: 0})
-    }
+      }
 
       if(document.getElementById('Dinner_Schedule').checked) {
         bill.push({tiffinType: '2', amount: document.getElementById('Amount_Dinner_Schedule').value, qty: document.getElementById('Quantity_Dinner_Schedule').value})
-      } else {
-        bill.push({tiffinType: '2', amount: 0, qty: 0, isActive: 0})
-    }
+      }
 
       const obj = {
         startDate: document.getElementById('StartDate').value,
@@ -77,9 +71,9 @@ class Home extends Component {
   }
 
   componentDidMount() {
-		const { customerId } = this.props.match.params;
-		console.log("*************", customerId);
-		this.setState({customerId: customerId}, this._getSchedule('', customerId));
+    const { customerId } = this.props.match.params;
+    console.log("*************", customerId);
+    this.setState({customerId: customerId}, this._getSchedule('', customerId));
 
     let date = new Date();
 
@@ -95,7 +89,7 @@ class Home extends Component {
       this.setState({showDialog: false});
   }
 
-  updateSchedule(index, day, date, id) {
+  updateSchedule(index, day, date, id, isNew) {
     let newDate = date.year() + "-" + (date.month() + 1) + "-" + day;
     let tiffin = {};
 
@@ -115,7 +109,7 @@ class Home extends Component {
         }
     });
 
-    this.setState({showDialog: true, index: index, date: newDate, tiffin: tiffin});
+    this.setState({showDialog: true, index: index, date: newDate, tiffin: tiffin, isNew: isNew || false});
   }
 
   _getSchedule(date, customerId) {
@@ -124,7 +118,7 @@ class Home extends Component {
 
     getSchedule({customerId: customerId, date: date}).then(function(schedule) {
         console.log("Schedule.............", schedule);
-        if(schedule.monthSchedule) {
+        if(schedule.length > 0) {
             that.setState({schedule, showSchedulerInput: false});
         } else {
             that.setState({showSchedulerInput: true});
@@ -156,6 +150,8 @@ class Home extends Component {
         colorCode = {colorCode: 'launch', index: day};
     } else if(tiffinType.indexOf('2') > -1) {
         colorCode = {colorCode: 'dinner', index: day};
+    } else if(tiffinType === '') {
+        colorCode = {colorCode: '', index: day}
     }
 
     return colorCode;
@@ -197,13 +193,15 @@ class Home extends Component {
   }
 
   render() {
-		if(!this.state.customerId) {
+		if(!this.state.schedule) {
 			return <div>Please wait, data is loading...</div>
-		}
+        }
+        
+        console.log("(((((((((((((", this.state.schedule);
 
     return (
 			<div className='page-center'>
-					<label><strong>CHANGE NAME</strong> Tiffing Schedule</label>
+					<label><strong>{this.state.schedule && this.state.schedule[0].name}</strong> Tiffing Schedule</label>
 					<hr />
            {
                this.state.showSchedulerInput && <div>
@@ -251,7 +249,7 @@ class Home extends Component {
                 </tbody>
             </table>
             {
-                this.state.showDialog && <Schedule role='role' index={this.state.index} _id={this.state.schedule[0].id} tiffin={this.state.tiffin} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
+                this.state.showDialog && <Schedule role='user' isNew={this.state.isNew} index={this.state.index} _id={this.state.schedule[0].id} tiffin={this.state.tiffin} customerId={this.state.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
             }
           </div>
         )

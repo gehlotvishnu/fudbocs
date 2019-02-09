@@ -8,7 +8,6 @@ import './App.css';
 import Customer from './Customer';
 import Print from './Print';
 import DialogBox from './Dialog'
-import TiffinDropDown from './Common/tiffinDropDown';
 import { filterCustomer } from './httpClient';
 import { getTodaysDateWithTime, getTodaysDateMMDDYYYY } from './Helper';
 
@@ -71,13 +70,15 @@ class App extends Component {
     const date = document.getElementById('Date_Search').value;
 
     if(document.getElementById('Launch_Search').checked && document.getElementById('Dinner_Search').checked) {
-      tiffinType = '3';
+      tiffinType = '1,2';
     } else if(document.getElementById('Launch_Search').checked) {
       tiffinType = '1';
     } else if(document.getElementById('Dinner_Search').checked) {
       tiffinType = '2';
     } else if(document.getElementById('BreakFast_Search').checked) {
       tiffinType = '4';
+    } else {
+      tiffinType = '1,2,3,4'
     }
     
     let newProducts = [];
@@ -119,7 +120,7 @@ class App extends Component {
     
           if(data && data.length > 0) {
             data.map(function(schedule) {
-              if(customer._id === schedule.CustomerId) {
+              if(customer._id === schedule._id) {
                 insert = true;
               }
             });

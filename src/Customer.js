@@ -24,8 +24,6 @@ class Customer extends Component {
 
     const obj = {
       firstName: document.getElementById('FirstName_0').value,
-      // middleName: document.getElementById('MiddleName_0').value,
-      // lastName: document.getElementById('LastName_0').value,
       email: document.getElementById('Email_0').value,
       sex: document.getElementById('Sex_0').value,
       mobile: document.getElementById('Mobile_0').value,
@@ -53,8 +51,6 @@ class Customer extends Component {
                  <tr>
                    <th>Sr. No.</th>
                    <th>Name</th>
-                   {/* <th>Middle Name</th>
-                   <th>Last Name</th> */}
                    <th>Email</th>
                    <th>Gender</th>
                    <th>Mobile</th>
@@ -68,8 +64,6 @@ class Customer extends Component {
                   <tr>
                     <td></td>
                    <td><input type='text' name='firstName' id='FirstName_0' required/></td>
-                   {/* <td><input type='text' name='middleName' id='MiddleName_0' /></td>
-                   <td><input type='text' name='lastName' id='LastName_0' /></td> */}
                    <td><input type='text' name='email' id='Email_0' /></td>
                    <td>
                     <select id='Sex_0'>
@@ -84,15 +78,6 @@ class Customer extends Component {
                    <td><input type='text' name='mobile' id='Mobile_0' required/></td>
                    <td><input type='text' size='40' name='cityName' id='CityName_0' required/></td>
                    <td><input type='text' name='remark' id='Remark_0' required/></td>
-                   {/* <td>
-                      <select id='TiffinType_0'>
-                        <option value="1">Launch</option>
-                        <option value="2">Dinner</option>
-                        <option value="3">Both</option>
-                      </select>
-                    </td>
-                    <td><input type='date' id='StartDate_0' name='startDate'/></td>
-                    <td><input type='date' id='EndDate_0' name='endDate'/></td> */}
                    <td><input type='button' id='AddCustomer' value='Add Customer' onClick={this.saveCustomer}/></td>
                   </tr>
                 {
@@ -103,12 +88,6 @@ class Customer extends Component {
                           <td>
                             <label type='text' name="firstName" id={`FirstName_${index}`}>{customer.name}</label>
                           </td>
-                          {/* <td>
-                            <label type='text' name="middleName" id={`MiddleName_${index}`}>{customer.MiddleName}</label>
-                          </td>
-                          <td>
-                            <label type='text' name="lastsName" id={`LastName_${index}`}>{customer.LastName}</label>
-                          </td> */}
                           <td>
                             <label type='text' name="email" id={`Email_${index}`}>{customer.email}</label>
                           </td>

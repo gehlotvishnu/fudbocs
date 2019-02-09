@@ -27,6 +27,11 @@ export const getTodaysDateMMDDYYYY = function() {
     return new moment().format("DD-MM-YYYY");
 }
 
+export const convertDate = function(inputFormat) {
+    function pad(s) { return (s < 10) ? '0' + s : s; }
+    var d = new Date(inputFormat);
+    return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+  }
 // export const getMonth = function(date) {
 //     return moment(date).getMonth();
 // }
