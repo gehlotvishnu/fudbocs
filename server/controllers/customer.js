@@ -66,4 +66,34 @@ const filter = function(req, res, next){
  }
 }
 
-module.exports = {add: add, all: all, filter: filter};
+const update = function(req, res, next){
+    let params = {
+					id:req.body.id,
+					name: req.body.firstName,
+					// uniqueKey: uuid(),
+					address:req.body.cityName,
+					email: req.body.email,
+					gender: req.body.sex,
+					mobileNo: req.body.mobile,
+					remark: req.body.remark 
+			};
+    const newCustomer= new Customer(params);
+
+    try {
+        newCustomer.update().then(function() {
+					// if(req.decoded.role === 'admin') {
+						new Customer({}).all().then(function(customerList) {
+							res.send(customerList);
+						});
+					// } else {
+					// 	new Customer({}).allByUserId(req.decoded.id).then(function(customerList) {
+					// 		res.send(customerList);
+					// 	});
+					// }
+			 });
+    } catch (err) {
+			console.log("Error: ", err);
+    }
+};
+
+module.exports = {add: add, all: all, filter: filter,update: update,};

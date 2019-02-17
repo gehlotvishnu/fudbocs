@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import { saveCustomer, getCustomers } from './httpClient';
+import { saveCustomer, getCustomers,editSaveCustomer } from './httpClient';
 
 class Customer extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    //editindex :state to track which customer edit button clicked
+    this.state = {editindex:-1};
 
     this.saveCustomer = this.saveCustomer.bind(this);
+    this.editCustomer = this.editCustomer.bind(this);
+    this.editSaveCustomer = this.editSaveCustomer.bind(this);
+    this.editCancel = this.editCancel.bind(this);
   }
   
   componentDidMount() {
@@ -42,9 +46,44 @@ class Customer extends Component {
     });
   }
 
+  //click handeler edit customer button
+  editCustomer(editindex){
+    const that = this;
+    that.setState({editindex:editindex});    
+  }
+
+  //click handeler Save button details(on edit)
+  editSaveCustomer(customerId,index){
+    const that = this;
+    const obj = {
+      id : customerId,
+      firstName: document.getElementById('edit_FirstName_'+ index).value,
+      email: document.getElementById('edit_email_'+ index).value,
+      sex: document.getElementById('edit_sex_'+ index).value,
+      mobile: document.getElementById('edit_mobile_'+ index).value,
+      cityName: document.getElementById('edit_cityName_'+ index).value,
+      remark: document.getElementById('edit_remark_'+ index).value
+    }
+    editSaveCustomer(obj).then(function(customers){
+           that.setState({editindex:-1});
+           that.props.setCustomers(customers);
+    });
+    
+
+  }
+
+
+  //click handeler Cancel button details(on edit)
+  editCancel(){
+  const that = this;
+  that.setState({editindex:-1});
+
+  }
+
+
   render() {
     const that = this;
-    return [
+    return[
         <div className='customer-list'>
                <table className="table table-bordered" id='customerList'>
                <thead>
@@ -86,26 +125,62 @@ class Customer extends Component {
                           <td>{index + 1}</td>
 
                           <td>
-                            <label type='text' name="firstName" id={`FirstName_${index}`}>{customer.name}</label>
+                            { that.state.editindex==index                          
+                            ? <input type='text' name ='edit_firstName' id={`edit_FirstName_${index}`} defaultValue={customer.name} />
+                            :<label type='text' name="firstName" id={`FirstName_${index}`}>{customer.name}</label>
+                            }
                           </td>
                           <td>
-                            <label type='text' name="email" id={`Email_${index}`}>{customer.email}</label>
+                            { that.state.editindex==index                           
+                            ? <input type='text' name ='edit_email' id={`edit_email_${index}`} defaultValue={customer.email} />
+                            :<label type='text' name="email" id={`Email_${index}`}>{customer.email}</label>}
                           </td>
                           <td>
-                            <label type='text' name="sex" id={`Sex_${index}`}>{customer.gender}</label>
+                            { that.state.editindex==index                              
+                             ? <select id={`edit_sex_${index}`} defaultValue={customer.gender} >
+                                  <option value="M" >
+                                    Male
+                                  </option>
+                                  <option value="F">
+                                    Female
+                                  </option>
+                                </select>
+                             :<label type='text' name="sex" id={`Sex_${index}`}>{customer.gender}</label>
+                            }
                           </td>
                           <td>
-                            <label type='text' name="mobile" id={`Mobile_${index}`}>{customer.mobileNo}</label>
+                            { that.state.editindex==index                            
+                            ? <input type='text' name ='edit_mobile' id={`edit_mobile_${index}`} defaultValue={customer.mobileNo} />
+                            : <label type='text' name="mobile" id={`Mobile_${index}`}>{customer.mobileNo}</label>
+                            }
+                          </td>
+                          
+                          <td>
+                          { that.state.editindex==index                           
+                            ? <input type='text' name ='edit_cityName' id={`edit_cityName_${index}`} defaultValue={customer.address} />
+                            :<label type='text' name="cityName" id={`CityName_${index}`}>{customer.address}</label>
+                          }
                           </td>
                           <td>
-                            <label type='text' name="cityName" id={`CityName_${index}`}>{customer.address}</label>
+                          { that.state.editindex==index                            
+                            ? <input type='text' name ='edit_remark' id={`edit_remark_${index}`} defaultValue={customer.remark} />
+                            : <label type='text' name="remark" id={`Remark_${index}`}>{customer.remark}</label>
+                          }
                           </td>
                           <td>
-                            <label type='text' name="remark" id={`Remark_${index}`}>{customer.remark}</label>
-                          </td>
-                          <td>
-                              <input type='button' name='schedule' id={`Schedule_${index}`} value='Schedule' onClick={() => that.props.openDialog(customer.id, customer.name, customer.id)}/>
-                              &nbsp;<a href={`/user/${customer._id}`} target='_blank'>Get Link</a>
+                          { that.state.editindex==index                         
+                            ?  <div>
+                                   <input type='button' name='edit_save' id={`edit_save_${index}`} value='Save' onClick={(e)=>that.editSaveCustomer(customer.id,index)}/>
+                                   <br/>
+                                   <input type='button' name='edit_cancel' id={`edit_cancel_${index}`} value='Cancel' onClick={that.editCancel}/>  
+                               </div>
+                            : <div>
+                                <input type='button' name='Edit' id={`Edit_${index}`} value='Edit Customer' onClick={(e)=>that.editCustomer(index)} />
+                                  &nbsp;<input type='button' name='schedule' id={`Schedule_${index}`} value='Schedule' onClick={()  => that.props.openDialog(customer.id, customer.name, customer.id)}/>
+                                  &nbsp;<a href={`/user/${customer._id}`} target='_blank'>Get Link</a>
+                              </div>
+                          }
+                              
                           </td>
                         </tr>;
                   })

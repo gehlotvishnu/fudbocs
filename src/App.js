@@ -95,16 +95,20 @@ class App extends Component {
 
         products.map(function(customer) {
           insert = true;
-    
-          if(firstName !== '' && customer.FirstName.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
+          
+         
+          if(firstName !== '' && customer.name.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
             insert = false;
+            //console.log(firstName);
+            //console.log(customer.name);
+            //console.log(insert);
           }
     
           // if(lastName !== '' && customer.LastName.toLowerCase().indexOf(lastName.toLowerCase())  === -1) {
           //   insert = false;
           // }
   
-          if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
+          if(addressSearch !== '' && customer.address.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
             insert = false;
           }
     
@@ -118,7 +122,9 @@ class App extends Component {
 
         tempNewProducts.map(function(customer) {
           insert = false;
-    
+     
+            //console.log(customer.name);
+            //console.log(insert);
           if(data && data.length > 0) {
             data.map(function(schedule) {
               if(customer._id === schedule._id) {
@@ -126,6 +132,8 @@ class App extends Component {
               }
             });
            
+            //console.log(customer.name);
+            //console.log(insert);
             insert && newProducts.push(customer);
           }
         });
@@ -137,7 +145,7 @@ class App extends Component {
       products.map(function(customer) {
         insert = true;
   
-        if(firstName !== '' && customer.FirstName.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
+        if(firstName !== '' && customer.name.toLowerCase().indexOf(firstName.toLowerCase()) === -1) {
           insert = false;
         }
   
@@ -145,7 +153,7 @@ class App extends Component {
         //   insert = false;
         // }
 
-        if(addressSearch !== '' && customer.CityName.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
+        if(addressSearch !== '' && customer.address.toLowerCase().indexOf(addressSearch.toLowerCase())  === -1) {
           insert = false;
         }
   
@@ -291,7 +299,7 @@ class App extends Component {
           {/* &nbsp; Last Name: <input type='text' id='LastName_Search' onChange={() => this.filterCustomer(true)} /> */}
           &nbsp; Address: <input type='text' id='Address_Search' onChange={() => this.filterCustomer(true)} />
           &nbsp; <input type='checkbox' name='breakFast' id='BreakFast_Search' value='Break Fast' /> <label for='BreakFast_Search'>Break Fast</label> |
-          &nbsp; <input type='checkbox' name='launch' id='Launch_Search' value='Break Fast' /> <label for='Launch_Search'>Launch</label> |
+          &nbsp; <input type='checkbox' name='launch' id='Launch_Search' value='Break Fast' /> <label for='Launch_Search'>Lunch</label> |
           &nbsp; <input type='checkbox' name='dinner' id='Dinner_Search' value='Break Fast' /> <label for='Dinner_Search'>Dinner</label> |
           &nbsp; Date: <input type='date' id='Date_Search' min="2018-11-30"/>
           &nbsp; <input className='btn cta sm' type='button' id='Search' value='Search' onClick={() => this.filterCustomer(true)}/>

@@ -14,7 +14,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render((
     <BrowserRouter>
-       <main>
+       
         <Switch>
             {/* <Route exact path='/' component={App}/> */}
             <PrivateRoute exact path="/" component={App} />
@@ -23,7 +23,7 @@ ReactDOM.render((
             <Route path='/reciept' component={Bill}/>
             <Route path='/print-customer' component={Print}/>
         </Switch>
-        </main>
+        
     </BrowserRouter>
   ), document.getElementById('root'))
 // If you want your app to work offline and load faster, you can change

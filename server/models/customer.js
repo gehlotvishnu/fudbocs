@@ -1,5 +1,6 @@
 const connection = require("../lib/connection.js");
 let Customer = function(params){
+	this.id= params.id,
     this.name = params.name,
     this.address = params.address,
     // this.uniqueKey = params.uniqueKey,
@@ -83,5 +84,29 @@ Customer.prototype.filter = function(params){
 		});
 	});
 };
+
+Customer.prototype.update = function(){
+	const that = this;
+	return new Promise(function(resolve, reject) {
+	connection.getConnection(function(error, connection){
+		if (error) {
+			throw error;
+		}
+
+		connection.query('UPDATE customer SET name="' + that.name + '",address="' + that.address + '",email="' + that.email + '",gender="' + that.gender + '",mobileNo="' + that.mobileNo + '",remark="' + that.remark + '" where id=' + that.id , function(error,rows,fields){
+					if(!error){ 
+					resolve(rows);
+				} else {
+					console.log("Error...", error);
+					reject(error);
+				}
+
+				connection.release();
+				console.log('Process Complete %d',connection.threadId);
+			});
+		});
+	});
+};
+
 
 module.exports = Customer;

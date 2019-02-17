@@ -64,6 +64,8 @@ export const saveCustomer = function (customer) {
     });
 }
 
+
+
 export const getCustomers = function (query) {
     return new Promise(function (resolve, reject) {
         axios('/api/customer/all', {
@@ -106,6 +108,23 @@ export const filterCustomer = function (date, tiffinType) {
                 reject(err);
             });
     })
+}
+
+export const editSaveCustomer = function (customer) {
+    return new Promise(function (resolve, reject) {       
+        axios('/api/customer/update', {
+            method: 'POST',
+            data: customer,
+            headers: authHeader()
+        }).then(res => {
+            
+            resolve(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    });
 }
 
 //Ender\'s+Game
