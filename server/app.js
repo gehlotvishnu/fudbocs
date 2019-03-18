@@ -7,6 +7,7 @@ const Customer = require('./controllers/customer.js');
 const customerRouter = require('./routes/customer');
 
 const Schedule = require('./controllers/schedule');
+const ScheduleRouter =require('./routes/schedule')
 const Auth = require('./controllers/auth');
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -17,10 +18,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.post("/api/auth/login", Auth.login);
 
 app.use('/api/customer', customerRouter);
+app.use('/api/schedule', ScheduleRouter);
+//app.get('api/schedule/exist',Schedule.exist);
 
-app.get('/api/schedule/getBy', Schedule.getBy);
-app.post('/api/schedule/add', Schedule.add);
-app.post('/api/schedule/update', Schedule.update);
+
+
 
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));

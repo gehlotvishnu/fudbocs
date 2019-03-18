@@ -15,8 +15,8 @@ export const getMonth = function(d){
     return month[d]
 };
 
-export const getTodaysDate = function() {
-    return moment();
+export const getTodaysDate = function() {    
+       return moment();
 }
 
 export const getTodaysDateWithTime = function() {

@@ -2,14 +2,18 @@ const Customer = require("../models/customer.js")
 
 const add = function(req, res, next){
     let params = {
-					createdBy: 'Admin',
-					name: req.body.firstName,
-					// uniqueKey: uuid(),
-					address:req.body.cityName,
+					name: req.body.name,
+					gender: req.body.gender,
+					HouseNo : req.body.HouseNo,
+					GaliSector: req.body.GaliSector,
+					Area: req.body.Area,
+					City: req.body.City,
+					Landmark: req.body.Landmark,
+					mobile : req.body.mobile,
 					email: req.body.email,
-					gender: req.body.sex,
-					mobileNo: req.body.mobile,
-					remark: req.body.remark 
+					remark: req.body.remark,
+					isActive: req.body.isActive,
+					createdBy: 'Admin'
 			};
     const newCustomer= new Customer(params);
 
@@ -46,6 +50,24 @@ const all = function(req, res, next){
  }
 }
 
+const getById = function(req, res, next){
+	try {
+		// if(req.decoded.role === 'admin') {
+			new Customer({}).getById(req.query.customerId).then(function(customer) {				
+				res.send(customer);
+			});
+		// } else {
+			// new Customer({}).allByUserId(req.decoded.id).then(function(customerList) {
+			// 	res.send(customerList);
+			// });
+		// }
+ } catch (err) {
+	 console.log("Error: ", err);
+ }
+}
+
+
+
 const filter = function(req, res, next){
 	try {
 		params = {
@@ -69,14 +91,18 @@ const filter = function(req, res, next){
 const update = function(req, res, next){
     let params = {
 					id:req.body.id,
-					name: req.body.firstName,
-					// uniqueKey: uuid(),
-					address:req.body.cityName,
+					name: req.body.name,
+					gender: req.body.gender,
+					HouseNo : req.body.HouseNo,
+					GaliSector: req.body.GaliSector,
+					Area: req.body.Area,
+					City: req.body.City,
+					Landmark: req.body.Landmark,
+					mobile : req.body.mobile,
 					email: req.body.email,
-					gender: req.body.sex,
-					mobileNo: req.body.mobile,
-					remark: req.body.remark 
-			};
+					remark: req.body.remark,
+					isActive: req.body.isActive
+			};			
     const newCustomer= new Customer(params);
 
     try {
@@ -96,4 +122,4 @@ const update = function(req, res, next){
     }
 };
 
-module.exports = {add: add, all: all, filter: filter,update: update,};
+module.exports = {add: add, all: all, filter: filter,update: update,getById:getById};

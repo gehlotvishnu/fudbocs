@@ -7,8 +7,8 @@ var dbOptions = {
     database : 'DCgScgSARO',
     port: 3306
 };
-/*
-var dbOptions = {
+
+/*var dbOptions = {
    host:'localhost',
    user     : 'root',
    password : '',

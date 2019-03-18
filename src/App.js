@@ -5,12 +5,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoadingOverlay from 'react-loading-overlay';
 
 import './App.css';
-import Customer from './Customer';
+import Customer from './Customer/Customer';
 import Print from './Print';
-import DialogBox from './Dialog'
-import { filterCustomer } from './httpClient';
-import { getTodaysDateWithTime, getTodaysDateMMDDYYYY } from './Helper';
+import { filterCustomer, CheckScheduleExist} from './httpClient';
+import { getTodaysDate, getTodaysDateWithTime, getTodaysDateMMDDYYYY } from './Helper';
 import { logout } from './Server/user';
+import AddCustomer from './Customer/AddCustomer';
+import EditCustomer from './Customer/EditCustomer';
+import DialogBox from './Dialog'
+import Calender from './Dialog/Calender';
+
 
 class App extends Component {
   constructor(props) {
@@ -19,12 +23,19 @@ class App extends Component {
     this.state = {
       isDialogOpen: false,
       isPrint: false,
-      lgShow: false
+      lgShow: false,
+      ShowAddCustomer:false,
+      ShowEditCustomer:false,
+      ShowSchedulerPref:false,
+      ShowScheduleCalender:false,
+      customerId:0,
+      customerName:''
   }
     this.setCustomers = this.setCustomers.bind(this);
     this.filterCustomer = this.filterCustomer.bind(this);
     this.print = this.print.bind(this);
     this.printDocument = this.printDocument.bind(this);
+    this._CheckScheduleExist=this._CheckScheduleExist.bind(this)
   }
   
   componentDidMount() {
@@ -169,9 +180,38 @@ class App extends Component {
     }
   }
 
-  openDialog = (id, customerName, primaryKey) => this.setState({ isDialogOpen: true, customerId: id, customerName: customerName, primaryKey: primaryKey })
+  _CheckScheduleExist(id) {
+
+    const that = this;
+    var date = getTodaysDate().format('YYYY-MM-DD');
+    
+    CheckScheduleExist({customerId: id, date: date, role: 'admin'}).then(function(status) {
+      if(status > 0) {
+            that.setState({ShowSchedulerPref: false,ShowScheduleCalender:true});       
+      } else {
+            that.setState({ShowSchedulerPref: true,ShowScheduleCalender:false});
+            /*var date = new Date(); //gives today date 
+            var startDay=new Date(date.getFullYear(), date.getMonth(),1);       
+            var endDay=new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          
+            if(document.querySelector("#StartDate")) document.querySelector("#StartDate").value =  moment(startDay).format('YYYY-MM-DD') ;
+            if(document.querySelector("#EndDate")) document.querySelector("#EndDate").value = moment(endDay).format('YYYY-MM-DD') ;*/
+        }
+    });
+  }
+
+  openScheduleDialog = (id, customerName) => {
+    this.setState({customerId: id, customerName: customerName});    
+    this._CheckScheduleExist(id); 
+  }  
  
-  handleClose = () => this.setState({ isDialogOpen: false })
+  handleScheduleClose = () => this.setState({ShowSchedulerPref:false, ShowScheduleCalender: false })
+
+  handelCloseAddCustomer= () => this.setState({ ShowAddCustomer: false })
+
+  openEditCustDialog = (id) => this.setState({ ShowEditCustomer: true, customerId: id })
+
+  handelCloseEditCustomer= () => this.setState({ ShowEditCustomer: false })
 
   printDocument() {
     const that = this;
@@ -274,6 +314,7 @@ class App extends Component {
   
     pdf.save("Customer_List_" + getTodaysDateMMDDYYYY() + ".pdf");
   }
+  
 
   render() {
     let lgClose = () => this.setState({ lgShow: false });
@@ -290,7 +331,7 @@ class App extends Component {
          
          <div className='header'>
           <div className='flex'>
-            <div className='width90'><h3>Tiffin Management System</h3></div>
+            <div className='width90'><h3>Tiffin Management System</h3></div>            
             <span><a href='#' onClick={logout}>LOGOUT</a></span>
           </div>
 
@@ -307,11 +348,23 @@ class App extends Component {
           &nbsp; <input className='btn cta sm' type='button' id='Print' value='Print' onClick={() => this.printDocument()} />
           </div>
           <hr />
-          <Customer setCustomers={this.setCustomers} customers={this.state.customers} openDialog={this.openDialog}/>
-
+          <div 	style={{textAlign:"left",paddingLeft:10}}>
+              <a href='#' onClick={()=> this.setState({ShowAddCustomer:true})}>Add Customer</a>
+              {this.state.ShowAddCustomer && <AddCustomer setCustomers={this.setCustomers} handelCloseAddCustomer={this.handelCloseAddCustomer} role= 'admin'/>}
+          </div>
+          <Customer setCustomers={this.setCustomers} customers={this.state.customers} openScheduleDialog={this.openScheduleDialog} openEditCustDialog={this.openEditCustDialog} role= 'admin'/>
           {
-              this.state.isDialogOpen &&
-              <DialogBox handleClose={this.handleClose} primaryKey={this.state.primaryKey} customerId={this.state.customerId} customerName={this.state.customerName}/>
+            this.state.ShowEditCustomer && 
+            <EditCustomer setCustomers={this.setCustomers} customerId={this.state.customerId} handelCloseEditCustomer={this.handelCloseEditCustomer} role= 'admin'/> }
+          }
+          {
+            this.state.ShowSchedulerPref && 
+            <DialogBox handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role= 'admin'/>
+          }
+          {
+            this.state.ShowScheduleCalender && 
+            <Calender handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role= 'admin'/>
+
           }
         </div>
     ]

@@ -1,15 +1,18 @@
 const connection = require("../lib/connection.js");
 let Customer = function(params){
 	this.id= params.id,
-    this.name = params.name,
-    this.address = params.address,
-    // this.uniqueKey = params.uniqueKey,
-    this.gender = params.gender,
-    this.mobileNo = params.mobileNo,
+	this.name = params.name,
+	this.gender = params.gender,
+	this.HouseNo = params.HouseNo,
+	this.GaliSector = params.GaliSector,
+	this.Area = params.Area,
+	this.City = params.City,
+	this.Landmark = params.Landmark,       
+    this.mobile = params.mobile,
 	this.email = params.email,
 	this.remark = params.remark,
     this.createdBy = params.createdBy,
-	this.isActive = 1
+	this.isActive = params.isActive
 };
 
 Customer.prototype.add = function(){
@@ -19,8 +22,8 @@ Customer.prototype.add = function(){
 		if (error) {
 			throw error;
 		}
-
-		connection.query('INSERT INTO customer(_id, name,address,email,gender,mobileNo,remark,isActive,createdBy) VALUES (unhex(replace(uuid(),"-",""))' + ',"' + that.name + '","' + that.address + '","' + that.email + '","' + that.gender + '","' + that.mobileNo + '","' + that.remark + '","'+ that.isActive + '","'+ that.createdBy + '")', function(error,rows,fields){
+		console.log(that)
+		connection.query('INSERT INTO customer(_id,name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile,email,remark,isActive,createdBy) VALUES (unhex(replace(uuid(),"-",""))' + ',"' + that.name + '","' + that.gender + '","' + that.HouseNo + '","' + that.GaliSector + '","' + that.Area+ '","' + that.City + '","' + that.Landmark+ '","' + that.mobile + '","' + that.email+ '","'+that.remark+ '","'+ that.isActive + '","'+ that.createdBy + '")', function(error,rows,fields){
 				if(!error){ 
 					resolve(rows);
 				} else {
@@ -41,13 +44,31 @@ Customer.prototype.all = function(){
 			if (error) {
 				throw error;
 			}
-
-			const isActive = 1;
-
-			connection.query('select id, hex(_id) as _id, name, address, email, gender, mobileNo, remark, dateTimeCreated from customer where isActive=?', [isActive], function(error,rows,fields){
+			connection.query('select id, hex(_id) as _id, name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, isActive, createdBy from customer', function(error,rows,fields){
 			 
 					if(!error){ 
 						resolve(rows);
+					} else {
+						console.log("Error...", error);
+						reject(error);
+					}
+
+					connection.release();
+					console.log('Process Complete %d',connection.threadId);
+				});
+		});
+	});
+};
+
+Customer.prototype.getById = function(customerId){
+	return new Promise(function(resolve, reject) {
+		connection.getConnection(function(error, connection){
+			if (error) {
+				throw error;
+			}		
+			connection.query('select id, hex(_id) as _id, name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, isActive, dateTimeCreated,createdBy from customer where id=?', [customerId], function(error,rows,fields){			
+					if(!error){ 
+						resolve(rows[0]);
 					} else {
 						console.log("Error...", error);
 						reject(error);
@@ -91,10 +112,9 @@ Customer.prototype.update = function(){
 	connection.getConnection(function(error, connection){
 		if (error) {
 			throw error;
-		}
-
-		connection.query('UPDATE customer SET name="' + that.name + '",address="' + that.address + '",email="' + that.email + '",gender="' + that.gender + '",mobileNo="' + that.mobileNo + '",remark="' + that.remark + '" where id=' + that.id , function(error,rows,fields){
-					if(!error){ 
+		}	
+		connection.query('UPDATE customer SET name="' + that.name + '",gender="' + that.gender +'",HouseNo="' + that.HouseNo+'",GaliSector="' + that.GaliSector+'",Area="' + that.Area+'",City="' + that.City + '",Landmark="' + that.Landmark +  '",mobile="' + that.mobile + '",email="' + that.email  + '",remark="' + that.remark + '",isActive="' + that.isActive + '" where id=' + that.id , function(error,rows,fields){
+				if(!error){ 
 					resolve(rows);
 				} else {
 					console.log("Error...", error);

@@ -20,11 +20,12 @@ export const post = function(uri, data) {
 	});
 }
 
-export const saveSchedule = function (shedule) {
+export const saveSchedule = function (schedule) {
     return new Promise(function (resolve, reject) {
         axios('/api/schedule/add', {
             method: 'POST',
-            data: shedule
+            data: schedule,
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         }).catch(err => {
@@ -38,7 +39,23 @@ export const updateSchedule = function (shedule) {
     return new Promise(function (resolve, reject) {
         axios('/api/schedule/update', {
             method: 'POST',
-            data: shedule
+            data: shedule,
+            headers: authHeader()
+        }).then(res => {
+            resolve(res.data);
+        }).catch(err => {
+            console.log(err);
+            reject(err);
+        });
+    });
+}
+
+export const updateScheduleFrom = function (schedule) {
+    return new Promise(function (resolve, reject) {
+        axios('/api/schedule/updatefrom', {
+            method: 'POST',
+            data: schedule,
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         }).catch(err => {
@@ -54,7 +71,7 @@ export const saveCustomer = function (customer) {
             method: 'POST',
             data: customer,
             headers: authHeader()
-        }).then(res => {
+        }).then(res => {           
             resolve(res.data);
         })
             .catch(err => {
@@ -81,10 +98,27 @@ export const getCustomers = function (query) {
     })
 }
 
+export const CheckScheduleExist = function (query) {
+    return new Promise(function (resolve, reject) {           
+        axios('/api/schedule/exist?customerId=' + query.customerId + '&date=' + query.date + '&role=' + query.role, {
+            method: 'GET',
+            headers: authHeader()
+        }).then(res => {           
+            resolve(res.data.schedule_exist);
+          
+        })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
 export const getSchedule = function (query) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {    
         axios('/api/schedule/getBy?customerId=' + query.customerId + '&date=' + query.date + '&role=' + query.role, {
             method: 'GET',
+            headers: authHeader()
         }).then(res => {
             resolve(res.data);
         })
@@ -116,8 +150,7 @@ export const editSaveCustomer = function (customer) {
             method: 'POST',
             data: customer,
             headers: authHeader()
-        }).then(res => {
-            
+        }).then(res => {          
             resolve(res.data);
         })
             .catch(err => {
@@ -126,5 +159,21 @@ export const editSaveCustomer = function (customer) {
             });
     });
 }
+
+export const getCustomersById = function (customerId) {
+    return new Promise(function (resolve, reject) {
+        axios('/api/customer/getById?customerId=' + customerId, {
+            method: 'GET',
+            headers: authHeader()
+        }).then(res => {        
+            resolve(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
 
 //Ender\'s+Game

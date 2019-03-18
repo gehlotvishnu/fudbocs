@@ -1,35 +1,26 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-
 import { Modal, Button, FormControl, Row, Col } from 'react-bootstrap';
-
-import { saveSchedule, getSchedule, updateSchedule } from '../httpClient';
-import { getDaysInMonth, getMonth, getTodaysDate } from '../Helper';
+import { saveSchedule} from '../httpClient';
 import TiffinDropDown from '../Common/tiffinDropDown';
-import Schedule from '../Dialog/Schedule';
-import Receipt from '../Bill';
+import moment from 'moment';
 
 class DialogBox extends Component {
   constructor(props) {
-    super(props);
-    this.state = {showDialog: false, printBill: false, showSchedulerInput: false};
-
+    super(props);   
     this.saveShedule = this.saveShedule.bind(this);
-    this._getSchedule = this._getSchedule.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.printBill = this.printBill.bind(this);
-  }
+   }
 
-  printBill = () => {
-    // your axios call here
-    localStorage.setItem("pageData", "Data Retrieved from axios request")
-    // route to new page by changing window.location
-    window.open('http://localhost:3000/reciept', "_blank") //to open new page
-  }
+  componentDidMount() {
+    var date = new Date(); //gives today date 
+    var startDay=new Date(date.getFullYear(), date.getMonth(),1);       
+    var endDay=new Date(date.getFullYear(), date.getMonth() + 1, 0);          
+    console.log(startDay)
+    console.log(endDay)
+    document.getElementById("StartDate").value =  moment(startDay).format('YYYY-MM-DD') ;
+    document.getElementById("EndDate").value = moment(endDay).format('YYYY-MM-DD') ;
 
-  setSchedule = (data) => {
-    this.setState({schedule: data});
   }
+  
 
   saveShedule() {
       const that = this;
@@ -50,143 +41,53 @@ class DialogBox extends Component {
       const obj = {
         startDate: document.getElementById('StartDate').value,
         endDate: document.getElementById('EndDate').value,
-        customerId: this.props.primaryKey,
+        customerId: this.props.customerId,
+        breakfast: document.getElementById('BreakFast_Schedule').checked ? 1 : 0,
+        breakfast_qty: document.getElementById('Quantity_BreakFast_Schedule').value, 
+        breakfast_amount: document.getElementById('Amount_BreakFast_Schedule').value, 
+        lunch:document.getElementById('Launch_Schedule').checked ? 1 : 0       , 
+        lunch_qty: document.getElementById('Quantity_Launch_Schedule').value, 
+        lunch_amount: document.getElementById('Amount_Launch_Schedule').value, 
+        dinner:document.getElementById('Dinner_Schedule').checked ? 1 : 0, 
+        dinner_qty: document.getElementById('Quantity_Dinner_Schedule').value, 
+        dinner_amount: document.getElementById('Amount_Dinner_Schedule').value,  
+        exclude_MON: document.getElementById('chkbox_mon').checked ? 1: 0, 
+        exclude_TUE: document.getElementById('chkbox_tue').checked ? 1: 0, 
+        exclude_WED: document.getElementById('chkbox_wed').checked ? 1: 0,  
+        exclude_THU: document.getElementById('chkbox_thu').checked ? 1: 0, 
+        exclude_FRI: document.getElementById('chkbox_fri').checked ? 1: 0,  
+        exclude_SAT: document.getElementById('chkbox_sat').checked ? 1: 0,  
+        exclude_SUN: document.getElementById('chkbox_sun').checked ? 1: 0,        
+        createdBy: 'Admin',
         // tiffinType: document.getElementById('TiffinType_Schedule').value,
-        isWeekend: document.getElementById('Yes').checked,
+        //isWeekend: document.getElementById('Yes').checked,
         bill: bill,
         isActive: 1
     }
-
+    console.log(obj)
     saveSchedule(obj).then(function(schedule) {
-        that.setState({schedule});
+        that.props.handleClose();        
     });
-  }
-  
-  getSnapshotBeforeUpdate(prevProps, prevState) {
+  } 
 
-    if(prevProps.customerId !== this.props.customerId) {
-        this._getSchedule("2019-02-07");
-    }
-
-    return false;
-  }
-
-  componentDidMount() {
-    let date = new Date();
-
-    if(document.querySelector("#StartDate")) document.querySelector("#StartDate").valueAsDate = new Date(date.getFullYear(), date.getMonth(), 2);
-    if(document.querySelector("#EndDate")) document.querySelector("#EndDate").valueAsDate =  new Date(date.getFullYear(), date.getMonth() + 1, 1);
-
-    // document.getElementById("StartDate").defaultValue = defaultStartDate;
-
-    this._getSchedule("2019-02-07");
-  }
-
-  handleClose() {
-      this.setState({showDialog: false});
-  }
-
-  updateSchedule(index, day, date, id) {
-    let newDate = date.year() + "-" + (date.month() + 1) + "-" + day;
-    let tiffin = {};
-
-    this.state.schedule.map(function(data) {
-        if(data.day === day){
-            if(data.tiffinType === 1) {
-                tiffin = {...tiffin, launch: {amount: data.amount, qty: data.qty}}
+  check(role, date, time) {
+    if(role === 'user') {
+        if(moment().isAfter(moment(date))) {
+            if(moment().diff(date, 'days') === 0) {
+                if(moment().isAfter(moment(time, "HH:mm a"))) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
 
-            if(data.tiffinType === 2) {
-                tiffin = {...tiffin, dinner: {amount: data.amount, qty: data.qty}}
-            }
-
-            if(data.tiffinType === 4) {
-                tiffin = {...tiffin, breakFast: {amount: data.amount, qty: data.qty}}
-            }
-        }
-    });
-
-    this.setState({showDialog: true, index: index, date: newDate, tiffin: tiffin});
-  }
-
-  _getSchedule(date) {
-    const that = this;
-
-    getSchedule({customerId: this.props.primaryKey, date: date, role: 'admin'}).then(function(schedule) {
-        if(schedule.length > 0) {
-            that.setState({schedule, showSchedulerInput: false});
-        } else {
-            that.setState({showSchedulerInput: true});
-
-            let date = new Date();
-
-            if(document.querySelector("#StartDate")) document.querySelector("#StartDate").valueAsDate = new Date(date.getFullYear(), date.getMonth(), 2);
-            if(document.querySelector("#EndDate")) document.querySelector("#EndDate").valueAsDate =  new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        }
-    });
-  }
-
-  isDateExistInSchedule(day, month, year) {
-    let colorCode = undefined;
-    let tiffinType = '';
-
-    this.state.schedule && (this.state.schedule || []).map(function(data, index) {
-        if(moment(year + '-' + month + '-' + day).isSame(moment(year + '-' + month + '-' + data.day))) {
-            if(data.qty > 0) {
-                tiffinType = tiffinType + data.tiffinType;
-            }
-        }
-    });
-
-    // TODO : check if something breaking because of change DAY From Index
-    if(tiffinType.indexOf('1') > -1 && tiffinType.indexOf('2') > -1) {
-        colorCode = {colorCode: 'both', index: day};
-    } else if(tiffinType.indexOf('1') > -1) {
-        colorCode = {colorCode: 'launch', index: day};
-    } else if(tiffinType.indexOf('2') > -1) {
-        colorCode = {colorCode: 'dinner', index: day};
-    } else if(tiffinType === '') {
-        colorCode = {colorCode: '', index: day}
-    }
-
-    return colorCode;
-  }
-
-  createCalendar = (date) => {
-    const days = getDaysInMonth(date.month(), date.year());
-
-    let table = []
-    let tr = [];
-    let td = [];
-
-    let todaysDay = date.startOf('month').get('day');
-
-    for(let i = 1; i < todaysDay; i++)
-    {
-        td.push(<td></td>)
-    }
-
-    todaysDay = 8 - todaysDay;
-
-    for (let i = 1; i <= days; i++) {
-        const colorCode = this.isDateExistInSchedule(i, date.month() + 1, date.year());
-
-        if(i%(todaysDay) === 0) {
-            todaysDay += 7;
-            td.push(<td className={colorCode && colorCode.colorCode} onClick={() => this.updateSchedule(colorCode && colorCode.index, i, date)}>{i}</td>)
-            table.push(<tr>{td}</tr>);
-            td = [];
-        } else {
-            td.push(<td className={colorCode && colorCode.colorCode} onClick={() => this.updateSchedule(colorCode && colorCode.index, i, date)}>{i}</td>)
+            return false;
         }
     }
 
-    if(td.length > 0) {
-        table.push(<tr>{td}</tr>);
-    }
+    return true;
+}
 
-    return table
-  }
 
   render() {
     return (
@@ -196,72 +97,41 @@ class DialogBox extends Component {
             onHide={this.props.handleClose} >
             <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-lg">
-              Tiffin Calendar
+              Schedule Preferences : {this.props.customerName}
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <label><strong>{this.props.customerName}</strong> Tiffing Schedule</label>
-            <hr />
-
-           {
-               this.state.showSchedulerInput && <div>
-                    <Row className="show-grid">
-                        <Col md={6} mdPush={6}>
-                        Start Date: <FormControl type='date' name='startDate' id='StartDate' />
-                        </Col>
-                        <Col md={6} mdpull={6}>
-                        End Date: <FormControl type='date' name='endDate' id='EndDate' />
-                        </Col>
-                    </Row>
-                  <TiffinDropDown id="Schedule" tiffin={{breakFast: {amount: 20, qty: 1}, launch: {amount: 45, qty: 1}, dinner: {amount: 45, qty: 1} }}/> &nbsp; &nbsp;<br />
-                   <label>Include Weekends:</label> &nbsp;
-                   <input type="radio" id="Yes" name="drone" value="yes"
-                           checked />
-                   <label htmlFor="Yes">Yes</label>&nbsp;
-                   <input type="radio" id="No" name="drone" value="no" />
-                   <label htmlFor="No">No</label> <br />
-                   {/* <label>Amount:</label> &nbsp;
-                   <input type='text' name='amount' id='Amount' defaultValue='40' /> */}
-                   <input type='button' name='saveSchedule' id='SaveShedule' value='Save' onClick={() => this.saveShedule()}/>
-               </div>
-           } 
-           </Modal.Body>
-            <div className="month"> 
-                <ul>
-                    <li className="prev">&#10094;</li>
-                    <li className="next">&#10095;</li>
-                    <li>{getMonth(getTodaysDate().month())}<br /><span>{getTodaysDate().year()}</span></li>
-                </ul>
-            </div>
-            <table className="weekdays">
-                <thead>
-                <tr>
-                    <td>Mo</td>
-                    <td>Tu</td>
-                    <td>We</td>
-                    <td>Th</td>
-                    <td>Fr</td>
-                    <td>Sa</td>
-                    <td>Su</td>
-                </tr>
-                </thead>
-                <tbody  className="days">
-                    {this.createCalendar(getTodaysDate())}
-                </tbody>
-            </table>
-            {
-                this.state.showDialog && <Schedule role='admin' index={this.state.index} _id={this.state.schedule[0].id} tiffin={this.state.tiffin} customerId={this.props.customerId} date={this.state.date} setSchedule={this.setSchedule} handleClose={() => this.handleClose()}/>
-            }
-            <Modal.Footer>
-            <Button variant="secondary"
-            	style={{
-                    marginLeft: 30
-                }}
-              onClick={() => this.props.handleClose()}>
-              Close
-            </Button>
+          <Modal.Body>          
+            <div>
+                <Row className="show-grid">
+                    <Col md={6} mdPush={6}>
+                    Start Date: <FormControl type='date' name='startDate' id='StartDate' />
+                    </Col>
+                    <Col md={6} mdpull={6}>
+                    End Date: <FormControl type='date' name='endDate' id='EndDate' />
+                    </Col>
+                </Row>
+                <TiffinDropDown id="Schedule" check={this.check} role={this.props.role} tiffin={{breakFast: {amount: 20, qty: 1}, launch: {amount: 45, qty: 1}, dinner: {amount: 45, qty: 1} }}/> &nbsp; &nbsp;<br />                
+                <label>Exclude Days:</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_mon'/>MON</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_tue'/>TUE</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_wed'/>WED</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_thu'/>THU</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_fri'/>FRI</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_sat'/>SAT</label>&nbsp;
+                <label><input type='checkbox' id='chkbox_sun'/>SUN</label>
+                <br />
+            </div>                       
+           </Modal.Body>           
+            <Modal.Footer>            
+                <Button variant="primary" style={{ marginLeft: 30}}   onClick={() => this.saveShedule()}>
+                Save
+                </Button>
+                <Button variant="secondary"	style={{ marginLeft: 30}}  onClick={() => this.props.handleClose()}>
+                Close
+                </Button>
             </Modal.Footer>
         </Modal>
+
         )
     }
 }
