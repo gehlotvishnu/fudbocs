@@ -203,3 +203,11 @@ body {font-family: Verdana, sans-serif;}
 .width90 {
   width: 90%;
 }
+
+.statusLoading{
+  background-color: yellow;
+}
+
+.statusSuccess{
+  background-color: #4fbf40;
+}

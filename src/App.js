@@ -29,17 +29,26 @@ class App extends Component {
       ShowSchedulerPref:false,
       ShowScheduleCalender:false,
       customerId:0,
-      customerName:''
+      customerName:'',
+      Action_Status:{IsLoading:false,LoadingText:''}
   }
     this.setCustomers = this.setCustomers.bind(this);
     this.filterCustomer = this.filterCustomer.bind(this);
     this.print = this.print.bind(this);
     this.printDocument = this.printDocument.bind(this);
-    this._CheckScheduleExist=this._CheckScheduleExist.bind(this)
+    this._CheckScheduleExist=this._CheckScheduleExist.bind(this);
+    this.Set_label_loading=this.Set_label_loading.bind(this);
   }
   
   componentDidMount() {
     document.querySelector("#Date_Search").valueAsDate = new Date();
+  }
+
+  Set_label_loading(ISLoading,loadingText){
+    let mystate= {... this.state.Action_Status};
+    mystate.IsLoading=ISLoading;
+    mystate.LoadingText=loadingText;
+    this.setState({Action_Status:mystate});
   }
 
   print() {
@@ -349,7 +358,8 @@ class App extends Component {
           </div>
           <hr />
           <div 	style={{textAlign:"left",paddingLeft:10}}>
-              <a href='#' onClick={()=> this.setState({ShowAddCustomer:true})}>Add Customer</a>
+              <a href='#' onClick={()=> this.setState({ShowAddCustomer:true})}>Add Customer</a>&nbsp;&nbsp;&nbsp;
+              <span className={this.state.Action_Status.IsLoading ? 'statusLoading' : 'statusSuccess'}><label>{this.state.Action_Status.LoadingText}</label></span>
               {this.state.ShowAddCustomer && <AddCustomer setCustomers={this.setCustomers} handelCloseAddCustomer={this.handelCloseAddCustomer} role= 'admin'/>}
           </div>
           <Customer setCustomers={this.setCustomers} customers={this.state.customers} openScheduleDialog={this.openScheduleDialog} openEditCustDialog={this.openEditCustDialog} role= 'admin'/>
@@ -359,7 +369,7 @@ class App extends Component {
           }
           {
             this.state.ShowSchedulerPref && 
-            <DialogBox handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role= 'admin'/>
+            <DialogBox Set_label_loading={this.Set_label_loading} handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role= 'admin'/>
           }
           {
             this.state.ShowScheduleCalender && 

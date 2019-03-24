@@ -6,7 +6,7 @@ import moment from 'moment';
 
 class DialogBox extends Component {
   constructor(props) {
-    super(props);   
+    super(props);    
     this.saveShedule = this.saveShedule.bind(this);
    }
 
@@ -26,6 +26,9 @@ class DialogBox extends Component {
       const that = this;
       let bill = [];
 
+      that.props.Set_label_loading(true,'Saving...');
+      that.props.handleClose();
+
       if(document.getElementById('BreakFast_Schedule').checked) {
         bill.push({tiffinType: '4', amount: document.getElementById('Amount_BreakFast_Schedule').value, qty: document.getElementById('Quantity_BreakFast_Schedule').value})
       }
@@ -43,14 +46,14 @@ class DialogBox extends Component {
         endDate: document.getElementById('EndDate').value,
         customerId: this.props.customerId,
         breakfast: document.getElementById('BreakFast_Schedule').checked ? 1 : 0,
-        breakfast_qty: document.getElementById('Quantity_BreakFast_Schedule').value, 
-        breakfast_amount: document.getElementById('Amount_BreakFast_Schedule').value, 
+        breakfast_qty: document.getElementById('BreakFast_Schedule').checked ? document.getElementById('Quantity_BreakFast_Schedule').value : 0, 
+        breakfast_amount: document.getElementById('BreakFast_Schedule').checked ? document.getElementById('Amount_BreakFast_Schedule').value : 0, 
         lunch:document.getElementById('Launch_Schedule').checked ? 1 : 0       , 
-        lunch_qty: document.getElementById('Quantity_Launch_Schedule').value, 
-        lunch_amount: document.getElementById('Amount_Launch_Schedule').value, 
+        lunch_qty: document.getElementById('Launch_Schedule').checked ? document.getElementById('Quantity_Launch_Schedule').value : 0, 
+        lunch_amount: document.getElementById('Launch_Schedule').checked ? document.getElementById('Amount_Launch_Schedule').value : 0, 
         dinner:document.getElementById('Dinner_Schedule').checked ? 1 : 0, 
-        dinner_qty: document.getElementById('Quantity_Dinner_Schedule').value, 
-        dinner_amount: document.getElementById('Amount_Dinner_Schedule').value,  
+        dinner_qty: document.getElementById('Dinner_Schedule').checked ? document.getElementById('Quantity_Dinner_Schedule').value :0, 
+        dinner_amount: document.getElementById('Dinner_Schedule').checked ? document.getElementById('Amount_Dinner_Schedule').value : 0,  
         exclude_MON: document.getElementById('chkbox_mon').checked ? 1: 0, 
         exclude_TUE: document.getElementById('chkbox_tue').checked ? 1: 0, 
         exclude_WED: document.getElementById('chkbox_wed').checked ? 1: 0,  
@@ -63,10 +66,10 @@ class DialogBox extends Component {
         //isWeekend: document.getElementById('Yes').checked,
         bill: bill,
         isActive: 1
-    }
-    console.log(obj)
+    } 
     saveSchedule(obj).then(function(schedule) {
-        that.props.handleClose();        
+        that.props.Set_label_loading(false,'Successfully Saved.');   
+        console.log('Saved Successfully')             
     });
   } 
 
@@ -123,7 +126,7 @@ class DialogBox extends Component {
             </div>                       
            </Modal.Body>           
             <Modal.Footer>            
-                <Button variant="primary" style={{ marginLeft: 30}}   onClick={() => this.saveShedule()}>
+                <Button variant="primary" style={{ marginLeft: 30}}   onClick={() => this.saveShedule() }>
                 Save
                 </Button>
                 <Button variant="secondary"	style={{ marginLeft: 30}}  onClick={() => this.props.handleClose()}>
