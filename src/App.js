@@ -14,7 +14,7 @@ import AddCustomer from './Customer/AddCustomer';
 import EditCustomer from './Customer/EditCustomer';
 import DialogBox from './Dialog'
 import Calender from './Dialog/Calender';
-import { Button, Collapse } from 'react-bootstrap'
+import { Button, Collapse, Tabs } from 'react-bootstrap'
 
 
 class App extends Component {
@@ -240,69 +240,50 @@ class App extends Component {
   printDocument() {
     const that = this;
     const pdfsize = 'a4';
-    const pdf = new jsPDF('l', 'pt', pdfsize);
+    const pdf = new jsPDF('p', 'mm', pdfsize);
 
     var table = document.getElementById('customerList').cloneNode(true);
-
-    table.deleteRow(0);
-
     for (var i = 0; i < table.rows.length; i++) {
       table.rows[i].deleteCell(2); //delete the cell
-      table.rows[i].deleteCell(2); //delete the cell
+      table.rows[i].deleteCell(4); //delete the cell
       table.rows[i].deleteCell(5); //delete the cell
     }
-
     const res = pdf.autoTableHtmlToJson(table);
 
     var totalPagesExp = pdf.internal.getNumberOfPages();
 
     var pageContent = function (data) {
       // HEADER
-      pdf.setFontSize(18);
+      pdf.setFontSize(12);
       pdf.setTextColor(40);
-      pdf.setFontStyle('normal');
-
-      pdf.text("Customer Tiffin List for " + that.getTiffinType() + " at " + getTodaysDateWithTime(), data.settings.margin.left, 50);
+      pdf.setFontStyle('bold');
+      pdf.text("Fudbocs", 105 - 7, 15)
+      const listdate = document.getElementById('Date_Search').value;
+      const headerrow2 = ("\nTiffin List of " + that.getTiffinType() + " for: " + listdate.substr(8, 2) + '-' + listdate.substr(5, 2) + '-' + listdate.substr(0, 4));
+      pdf.text(headerrow2, (210 - headerrow2.length * 1.8) / 2, 15);
 
       // FOOTER
       var str = "Page " + data.pageCount;
       // Total page number plugin only available in jspdf v1.0+
       if (typeof pdf.putTotalPages === 'function') {
-        str = str; //+ " of " + totalPagesExp;
+        str = str + " of " + totalPagesExp;
       }
       pdf.setFontSize(10);
-      pdf.text(str, data.settings.margin.left, pdf.internal.pageSize.height - 10);
+      pdf.text(getTodaysDateWithTime(), data.settings.margin.left, pdf.internal.pageSize.height - 10);
+      pdf.text(str, pdf.internal.pageSize.width - 30, pdf.internal.pageSize.height - 10);
     };
 
-    pdf.autoTable(res.columns, res.data, {
-      didDrawPage: pageContent,
-      // beforePageContent: header,
-      startY: 60,
-      drawHeaderRow: function (row, data) {
-        row.height = 46;
-      },
-      drawHeaderCell: function (cell, data) {
-        pdf.rect(cell.x, cell.y, cell.width, cell.height, cell.styles.fillStyle);
-        pdf.setFillColor(230);
-        pdf.rect(cell.x, cell.y + (cell.height / 2), cell.width, cell.height / 2, cell.styles.fillStyle);
-        pdf.autoTableText(cell.text, cell.textPos.x, cell.textPos.y, {
-          halign: cell.styles.halign,
-          valign: cell.styles.valign
-        });
-        pdf.setTextColor(100);
-        var text = data.table.rows[0].cells[data.column.dataKey].text;
-        pdf.autoTableText(text, cell.textPos.x, cell.textPos.y + (cell.height / 2), {
-          halign: cell.styles.halign,
-          valign: cell.styles.valign
-        });
 
-        return false;
-      },
-      drawRow: function (row, data) {
-        if (row.index === 0) return false;
-      },
-      margin: {
-        top: 60
+    pdf.autoTable({
+      didDrawPage: pageContent,
+      startY: 25,
+      head: [['SrNo', 'Name', 'Address', 'Mobile', 'Remaks', 'Given', 'Taken']],
+      body: res.data,
+      didDrawCell: data => {
+        if (data.section === 'head') {
+          //draw header borders
+          pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, data.cell.styles.fillStyle);
+        }
       },
       styles: {
         overflow: 'linebreak',
@@ -310,32 +291,24 @@ class App extends Component {
         tableWidth: 'auto',
         cellWidth: 'auto',
       },
+      headStyles: {
+        textColor: 100,
+        fillColor: 230,
+        halign: 'center'
+      },
       columnStyles: {
-        text: {
-          columnWidth: 'wrap'
-        },
-        columnName1: {
-          columnWidth: 45,
-          fontStyle: 'bold',
-          textColor: 240
-        },
-        description: {
-          columnWidth: 107
-        },
-        columnName2: {
-          columnWidth: 45
-        },
-        columnName3: {
-          columnWidth: 45
-        },
-        columnName4: {
-          columnWidth: 45
-        }
+        text: { cellWidth: 'wrap' },
+        0: { cellWidth: 10, halign: 'center' },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 60 },
+        3: { cellWidth: 24, halign: 'center' },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 10, halign: 'center' },
+        6: { cellWidth: 10, halign: 'center' },
       },
       bodyStyles: { valign: 'middle' },
       theme: 'grid',
     });
-
     pdf.save("Customer_List_" + getTodaysDateMMDDYYYY() + ".pdf");
   }
 
