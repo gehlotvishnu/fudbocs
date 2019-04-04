@@ -14,7 +14,7 @@ import AddCustomer from './Customer/AddCustomer';
 import EditCustomer from './Customer/EditCustomer';
 import DialogBox from './Dialog'
 import Calender from './Dialog/Calender';
-import { Button, Collapse, Tabs } from 'react-bootstrap'
+import { Button, Collapse } from 'react-bootstrap'
 
 
 class App extends Component {
@@ -31,6 +31,7 @@ class App extends Component {
       ShowScheduleCalender: false,
       customerId: 0,
       customerName: '',
+      CurrentCustomer: {},
       Action_Status: { IsLoading: false, LoadingText: '' },
       Filteropen: false,
       FilterLoading: false
@@ -224,16 +225,16 @@ class App extends Component {
     });
   }
 
-  openScheduleDialog = (id, customerName) => {
-    this.setState({ customerId: id, customerName: customerName });
-    this._CheckScheduleExist(id);
+  openScheduleDialog = (customerInfo) => {
+    this.setState({ CurrentCustomer: customerInfo });
+    this._CheckScheduleExist(customerInfo.id);
   }
 
   handleScheduleClose = () => this.setState({ ShowSchedulerPref: false, ShowScheduleCalender: false })
 
   handelCloseAddCustomer = () => this.setState({ ShowAddCustomer: false })
 
-  openEditCustDialog = (id) => this.setState({ ShowEditCustomer: true, customerId: id })
+  openEditCustDialog = (customerInfo) => this.setState({ ShowEditCustomer: true, CurrentCustomer: customerInfo })
 
   handelCloseEditCustomer = () => this.setState({ ShowEditCustomer: false })
 
@@ -406,21 +407,21 @@ class App extends Component {
         <div style={{ textAlign: "left", paddingLeft: 10 }}>
           <a href='#' onClick={() => this.setState({ ShowAddCustomer: true })}>Add Customer</a>&nbsp;&nbsp;&nbsp;
               <span className={this.state.Action_Status.IsLoading ? 'statusLoading' : 'statusSuccess'}><label>{this.state.Action_Status.LoadingText}</label></span>
-          {this.state.ShowAddCustomer && <AddCustomer setCustomers={this.setCustomers} handelCloseAddCustomer={this.handelCloseAddCustomer} role='admin' />}
+          {this.state.ShowAddCustomer && <AddCustomer Set_label_loading={this.Set_label_loading} setCustomers={this.setCustomers} handelCloseAddCustomer={this.handelCloseAddCustomer} role='admin' />}
         </div>
         <Customer setCustomers={this.setCustomers} customers={this.state.customers} openScheduleDialog={this.openScheduleDialog} openEditCustDialog={this.openEditCustDialog} role='admin' />
         {
           this.state.ShowEditCustomer &&
-          <EditCustomer setCustomers={this.setCustomers} customerId={this.state.customerId} handelCloseEditCustomer={this.handelCloseEditCustomer} role='admin' />
+          <EditCustomer Set_label_loading={this.Set_label_loading} setCustomers={this.setCustomers} customerInfo={this.state.CurrentCustomer} handelCloseEditCustomer={this.handelCloseEditCustomer} role='admin' />
         }
 
         {
           this.state.ShowSchedulerPref &&
-          <DialogBox Set_label_loading={this.Set_label_loading} handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role='admin' />
+          <DialogBox Set_label_loading={this.Set_label_loading} handleClose={this.handleScheduleClose} customerInfo={this.state.CurrentCustomer} role='admin' />
         }
         {
           this.state.ShowScheduleCalender &&
-          <Calender handleClose={this.handleScheduleClose} customerId={this.state.customerId} customerName={this.state.customerName} role='admin' />
+          <Calender handleClose={this.handleScheduleClose} customerInfo={this.state.CurrentCustomer} role='admin' />
 
         }
       </div >
