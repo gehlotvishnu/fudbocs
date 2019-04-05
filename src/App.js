@@ -206,11 +206,9 @@ class App extends Component {
   }
 
   _CheckScheduleExist(id) {
-
     const that = this;
-    var date = getTodaysDate().format('YYYY-MM-DD');
 
-    CheckScheduleExist({ customerId: id, date: date, role: 'admin' }).then(function (status) {
+    CheckScheduleExist({ customerId: id, role: 'admin' }).then(function (status) {
       if (status > 0) {
         that.setState({ ShowSchedulerPref: false, ShowScheduleCalender: true });
       } else {

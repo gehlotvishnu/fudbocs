@@ -1,7 +1,6 @@
 const moment = require('moment');
 
 export const getDaysInMonth = function (month, year) {
-  console.log(month, year)
   month = month + 1;
   // Here January is 1 based
   //Day 0 is the last day in the previous month

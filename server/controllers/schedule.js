@@ -27,8 +27,7 @@ const add = function (req, res, next) {
 
 const exist = function (req, res, next) {
   try {
-    let date = req.query.date ? new Date(req.query.date) : new Date();
-    new Schedule({}).ScheduleExist(req.query.customerId, date).then(function (status) {
+    new Schedule({}).ScheduleExist(req.query.customerId).then(function (status) {
       res.send(status);
     });
 

@@ -1,19 +1,19 @@
 
 // This will be in some JSON config we'll say
-/*var dbOptions = {
+var dbOptions = {
   host: 'remotemysql.com',
   user: 'DCgScgSARO',
   password: 'JUSuLEec0K',
   database: 'DCgScgSARO',
   port: 3306
-};*/
+};
 
-var dbOptions = {
+/*var dbOptions = {
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'fudbocs'
-};
+};*/
 
 
 //This will depend on which version/module/db you're using, but here's what mine looks like

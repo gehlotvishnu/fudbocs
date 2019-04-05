@@ -82,14 +82,14 @@ Schedule.prototype.getBy = function (customerId, date) {
   });
 };
 
-Schedule.prototype.ScheduleExist = function (customerId, date) {
+Schedule.prototype.ScheduleExist = function (customerId) {
   return new Promise(function (resolve, reject) {
     connection.getConnection(function (error, connection) {
       if (error) {
         throw error;
       }
       const isActive = 1;
-      connection.query('select count(*) as schedule_exist from schedule where isActive=?   and customerId=?', [isActive, date.getFullYear(), (date.getMonth() + 1), customerId], function (error, rows, fields) {
+      connection.query('select count(*) as schedule_exist from schedule where isActive=?   and customerId=?', [isActive, customerId], function (error, rows, fields) {
 
         if (!error) {
           resolve(rows[0]);
