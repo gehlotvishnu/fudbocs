@@ -68,7 +68,7 @@ const all = function (req, res, next) {
 
 const getById = function (req, res, next) {
   try {
-    // if(req.decoded.role === 'admin') {
+    // if(req.decoded.role === 'admin') {    
     new Customer({}).getById(req.query.customerId).then(function (customer) {
       res.send(customer);
     });

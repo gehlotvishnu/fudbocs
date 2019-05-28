@@ -43,6 +43,7 @@ class Customer extends Component {
                 return <tr>
                   <td>
                     {index + 1}
+                    <input type="hidden" id="CustomerId" name="CustomerId" value={customer.id}></input>
                   </td>
                   <td>
                     <label type='text' name="name" id={`name_${index}`}>{customer.name}</label>

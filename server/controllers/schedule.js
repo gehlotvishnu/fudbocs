@@ -4,8 +4,7 @@ const { getDays } = require('../helper');
 const add = function (req, res, next) {
   //get array of days after exlusion like mon,tue etc.
   const daySchedule = getDays(new Date(req.body.startDate), new Date(req.body.endDate), req.body.exclude_MON, req.body.exclude_TUE, req.body.exclude_WED, req.body.exclude_THU, req.body.exclude_FRI, req.body.exclude_SAT, req.body.exclude_SUN);
-  console.log(req.body)
-  console.log(daySchedule)
+
   let params = {
     customerId: req.body.customerId,
     date: new Date(req.body.startDate),
@@ -15,7 +14,6 @@ const add = function (req, res, next) {
     daySchedule: daySchedule
   };
   const newSchedule = new Schedule(params);
-
   try {
     newSchedule.add().then(function (status) {
       res.send(status)
@@ -36,7 +34,16 @@ const exist = function (req, res, next) {
   }
 }
 
+const ScheduleExistforMonth = function (req, res, next) {
+  try {
+    new Schedule({}).ScheduleExistforMonth(req.query.month, req.query.year).then(function (status) {
+      res.send(status);
+    });
 
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+}
 
 
 const getBy = function (req, res, next) {
@@ -52,6 +59,17 @@ const getBy = function (req, res, next) {
         res.send(schedules);
       });
     }
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+}
+
+const getScheduleQtyAmount = function (req, res, next) {
+  try {
+    let date = req.query.date ? new Date(req.query.date) : new Date();
+    new Schedule({}).getScheduleQtyAmount(req.query.customerId, date, req.query.tiffinType).then(function (schedule) {
+      res.send(schedule);
+    });
   } catch (err) {
     console.log("Error: ", err);
   }
@@ -114,4 +132,4 @@ const updatefrom = function (req, res, next) {
   }
 }
 
-module.exports = { add: add, exist: exist, getBy: getBy, update: update, updatefrom: updatefrom };
+module.exports = { add: add, exist: exist, getBy: getBy, update: update, updatefrom: updatefrom, getScheduleQtyAmount, ScheduleExistforMonth: ScheduleExistforMonth };

@@ -82,16 +82,15 @@ Customer.prototype.getById = function (customerId) {
       if (error) {
         throw error;
       }
-      connection.query('select id, hex(_id) as _id, name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, isActive, dateTimeCreated,createdBy,breakfast, breakfast_qty, breakfast_amount, lunch, lunch_qty, lunch_amount, dinner, dinner_qty, dinner_amount, exclude_MON, exclude_TUE, exclude_WED, exclude_THU, exclude_FRI, exclude_SAT, exclude_SUN from customer where id=?', [customerId], function (error, rows, fields) {
+      var query = connection.query('select id, hex(_id) as _id, name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, isActive, dateTimeCreated,createdBy,breakfast, breakfast_qty, breakfast_amount, lunch, lunch_qty, lunch_amount, dinner, dinner_qty, dinner_amount, exclude_MON, exclude_TUE, exclude_WED, exclude_THU, exclude_FRI, exclude_SAT, exclude_SUN from customer where id=?', [customerId], function (error, rows, fields) {
         if (!error) {
           resolve(rows[0]);
         } else {
           console.log("Error...", error);
           reject(error);
         }
-
         connection.release();
-        console.log('Process Complete %d', connection.threadId);
+        console.log('Get Customer ById  Complete %d', connection.threadId);
       });
     });
   });
@@ -106,8 +105,8 @@ Customer.prototype.filter = function (params) {
 
       const isActive = 1;
 
-      connection.query('select c.id, hex(_id) as _id,name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, c.isActive,c.dateTimeCreated from customer c inner join schedule s on c.id = s.customerId inner join tiffin_schedule ts on s.id = ts.scheduleId where c.isActive=? and s.year = ? and s.month = ? and ts.day = ? and ts.tiffinType in (?) and ts.isActive = 1', [isActive, params.date.getFullYear(), params.date.getMonth() + 1, params.date.getDate(), params.tiffinType], function (error, rows, fields) {
-
+      var query = connection.query('select c.id, hex(_id) as _id,name,gender,HouseNo,GaliSector,Area,City,Landmark,mobile, email, remark, c.isActive,c.dateTimeCreated from customer c inner join schedule s on c.id = s.customerId inner join tiffin_schedule ts on s.id = ts.scheduleId where c.isActive=? and s.year = ? and s.month = ? and ts.day = ? and ts.tiffinType in (?) and ts.isActive = 1', [isActive, params.date.getFullYear(), params.date.getMonth() + 1, params.date.getDate(), params.tiffinType], function (error, rows, fields) {
+        //console.log(query.sql)
         if (!error) {
           resolve(rows);
         } else {
@@ -116,7 +115,7 @@ Customer.prototype.filter = function (params) {
         }
 
         connection.release();
-        console.log('Process Complete %d', connection.threadId);
+        console.log('Customer Filter Process Complete %d', connection.threadId);
       });
     });
   });

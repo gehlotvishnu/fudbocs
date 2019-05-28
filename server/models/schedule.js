@@ -10,12 +10,10 @@ let Schedule = function (params) {
     this.createdBy = params.createdBy,
     this.daySchedule = params.daySchedule,
 
-
     //array of days of month which will be affected by Startfromdt or Stopfromdt
     this.CalenderDays = params.CalenderDays,
-    this.dateTimeModified = params.dateTimeModified
-
-
+    this.dateTimeModified = params.dateTimeModified,
+    this.tiffinType = params.tiffinType
 };
 
 Schedule.prototype.add = function () {
@@ -25,7 +23,6 @@ Schedule.prototype.add = function () {
       if (error) {
         throw error;
       }
-
       let values = [
         [that.customerId, that.date.getFullYear(), (that.date.getMonth() + 1), that.isActive, that.createdBy]
       ]
@@ -55,7 +52,7 @@ Schedule.prototype.add = function () {
       });
 
       connection.release();
-      console.log('Process Complete %d', connection.threadId);
+      console.log('Schedule Add Process Complete %d', connection.threadId);
     });
   });
 };
@@ -82,6 +79,28 @@ Schedule.prototype.getBy = function (customerId, date) {
   });
 };
 
+Schedule.prototype.getScheduleQtyAmount = function (customerId, date, tiffinType) {
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) {
+        throw error;
+      }
+      const isActive = 1;
+      connection.query('select s.id, c.name, ts.day, ts.tiffinType, ts.qty, ts.amount from schedule s inner join tiffin_schedule ts on s.id = ts.scheduleId inner join customer c on s.customerId = c.id where ts.isActive=? and year=? and month=? and customerId=? and day=? and tiffinType=?', [isActive, date.getFullYear(), (date.getMonth() + 1), customerId, date.getDate(), tiffinType], function (error, rows, fields) {
+        if (!error) {
+          resolve(rows);
+        } else {
+          console.log("Error...", error);
+          reject(error);
+        }
+
+        connection.release();
+        console.log('getScheduleQtyAmount Process Complete %d', connection.threadId);
+      });
+    });
+  });
+};
+
 Schedule.prototype.ScheduleExist = function (customerId) {
   return new Promise(function (resolve, reject) {
     connection.getConnection(function (error, connection) {
@@ -90,8 +109,29 @@ Schedule.prototype.ScheduleExist = function (customerId) {
       }
       const isActive = 1;
       connection.query('select count(*) as schedule_exist from schedule where isActive=?   and customerId=?', [isActive, customerId], function (error, rows, fields) {
-
         if (!error) {
+          resolve(rows[0]);
+        } else {
+          console.log("Error...", error);
+          reject(error);
+        }
+        connection.release();
+        console.log('ScheduleExist Process Complete %d', connection.threadId);
+      });
+    });
+  });
+};
+
+Schedule.prototype.ScheduleExistforMonth = function (month, year) {
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) {
+        throw error;
+      }
+      var query = connection.query('select count(*) as schedule_exist from schedule where month=?   and year=?', [month, year], function (error, rows, fields) {
+        //console.log(query.sql);
+        if (!error) {
+          //console.log(rows[0])
           resolve(rows[0]);
         } else {
           console.log("Error...", error);
@@ -99,7 +139,7 @@ Schedule.prototype.ScheduleExist = function (customerId) {
         }
 
         connection.release();
-        console.log('Process Complete %d', connection.threadId);
+        console.log('ScheduleExistforMonth Process Complete %d', connection.threadId);
       });
     });
   });
