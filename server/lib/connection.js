@@ -1,28 +1,5 @@
 
 // This will be in some JSON config we'll say
-/*var dbOptions = {
-  host: 'remotemysql.com',
-  user: 'DCgScgSARO',
-  password: 'JUSuLEec0K',
-  database: 'DCgScgSARO',
-  port: 3306
-};*/
-
-/*var dbOptions = {
-  host: 'localhost',
-  user: 'root',
-  password: '6mNMX9Ln0oykXKic',
-  database: 'fudbocs',
-  port: 3306
-};*/
-
-/*var dbOptions = {
-  host: '103.120.178.208',
-  user: 'root',
-  password: '6mNMX9Ln0oykXKic',
-  database: 'fudbocs',
-  port: 2086
-};*/
 
 var dbOptions = {
   host: 'localhost',
