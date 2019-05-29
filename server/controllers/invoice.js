@@ -48,4 +48,4 @@ const invoiceExistformonth = function (req, res, next) {
   }
 }
 
-module.exports = { generate, getall, getIvoiceDetails,invoiceExistformonth };
+module.exports = { generate, getall, getIvoiceDetails, invoiceExistformonth };

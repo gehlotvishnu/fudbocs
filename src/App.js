@@ -394,7 +394,7 @@ class App extends Component {
 
                   //Add customer details          
                   await getCustomersById(invoice.customerId).then((customer) => {
-                    body.push([{ text: [customer.name + '\n', customer.HouseNo + ' ' + customer.GaliSector + '\n' + customer.Area + ' ' + customer.City + (customer.Landmark && '\nLandmark: ' + customer.Landmark), '\n' + 'Mobile: 9930350133\n'], colSpan: 10, style: 'Customer' }, {}, {}, {}, {}, {}, {}, {}, {}, {}])
+                    body.push([{ text: [customer.name + '\n', customer.HouseNo + ' ' + customer.GaliSector + '\n' + customer.Area + ' ' + customer.City + (customer.Landmark && '\nLandmark: ' + customer.Landmark), '\n' + 'Mobile: ' + customer.mobile], colSpan: 10, style: 'Customer' }, {}, {}, {}, {}, {}, {}, {}, {}, {}])
                   })
 
                   //add Item Header
