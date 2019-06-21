@@ -143,5 +143,27 @@ Customer.prototype.update = function () {
   });
 };
 
+Customer.prototype.set_isActive = function (customerId, isActive) {
+  const that = this;
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) {
+        throw error;
+      }
+      connection.query('UPDATE customer SET isActive="' + isActive + '" where id=' + customerId, function (error, rows, fields) {
+        if (!error) {
+          resolve(rows);
+        } else {
+          console.log("Error...", error);
+          reject(error);
+        }
+
+        connection.release();
+        console.log('set_isActive Process Complete %d', connection.threadId);
+      });
+    });
+  });
+};
+
 
 module.exports = Customer;

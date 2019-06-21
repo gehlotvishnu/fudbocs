@@ -154,4 +154,14 @@ const update = function (req, res, next) {
   }
 };
 
-module.exports = { add: add, all: all, filter: filter, update: update, getById: getById };
+const set_isActive = function (req, res, next) {
+  try {
+    new Customer({}).set_isActive(req.query.customerId, req.query.isActive).then(function (status) {
+      res.send(status);
+    });
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+}
+
+module.exports = { add: add, all: all, filter: filter, update: update, getById: getById, set_isActive };

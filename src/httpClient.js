@@ -269,6 +269,22 @@ export const getCustomersById = function (customerId) {
 }
 
 
+export const Set_isActive = function (customerId, isActive) {
+  return new Promise(function (resolve, reject) {
+    axios('/api/customer/set_isactive?customerId=' + customerId + '&isActive=' + isActive, {
+      method: 'POST',
+      headers: authHeader()
+    }).then(res => {
+      resolve(res.data);
+    })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}
+
+
 
 
 //Ender\'s+Game
